@@ -3,7 +3,6 @@ package com.shroomlife.shliste.state
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.shroomlife.shliste.utils.ColorUtils.getColorFromString
 import com.shroomlife.shliste.utils.ColorUtils.getRandomColor
 import java.util.UUID
 

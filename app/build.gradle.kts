@@ -1,6 +1,3 @@
-import com.android.utils.jvmArchitecture
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)

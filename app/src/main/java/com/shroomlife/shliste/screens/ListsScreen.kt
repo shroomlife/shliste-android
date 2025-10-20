@@ -2,16 +2,13 @@ package com.shroomlife.shliste.screens
 
 import android.util.Log
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
 import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.components.AppContainer
-import com.shroomlife.shliste.utils.ColorUtils
 import com.shroomlife.shliste.components.ListCard
 import com.shroomlife.shliste.state.BottomNavType
 
