@@ -15,7 +15,7 @@ object ColorUtils {
             r = Random.nextInt(256)
             g = Random.nextInt(256)
             b = Random.nextInt(256)
-        } while ((r + g + b) < 100 || (r + g + b) > 700)
+        } while (r + g + b !in 100..700)
 
         val alpha = (0.20f * 255).toInt()
 
