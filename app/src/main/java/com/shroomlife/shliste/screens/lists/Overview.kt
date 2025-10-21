@@ -1,0 +1,54 @@
+package com.shroomlife.shliste.screens.lists
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import com.shroomlife.shliste.LocalAppStore
+import com.shroomlife.shliste.LocalListStore
+import com.shroomlife.shliste.LocalNavController
+import com.shroomlife.shliste.components.AppContainer
+import com.shroomlife.shliste.components.ListCard
+import com.shroomlife.shliste.state.BottomNavType
+
+@Composable
+fun ListsOverviewScreen() {
+
+    val navController = LocalNavController.current
+    val appStore = LocalAppStore.current
+
+    val listStore = LocalListStore.current
+    val lists = listStore.lists
+
+    LaunchedEffect(Unit) {
+        appStore.setBottomNav(BottomNavType.APP)
+    }
+
+    AppContainer() {
+
+        if(lists.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("Keine Listen vorhanden.")
+            }
+        } else {
+            for (list in lists) {
+                ListCard(
+                    uuid = list.uuid,
+                    title = list.name,
+                    content = "Andere",
+                    color = list.color,
+                    onClick = { uuid ->
+                        navController.navigate("lists/$uuid")
+                    }
+                )
+            }
+        }
+
+    }
+}
