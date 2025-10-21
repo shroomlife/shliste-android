@@ -8,4 +8,7 @@ object Routes {
 
     const val LIST_DETAIL = "lists/{listId}"
     fun listDetail(listId: String) = "lists/$listId"
+
+    const val LIST_CREATE = "lists/create"
+    fun listCreate() = "lists/create"
 }

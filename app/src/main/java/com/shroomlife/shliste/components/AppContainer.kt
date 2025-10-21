@@ -18,8 +18,7 @@ fun AppContainer(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(16.dp)
     ) {
         content()
     }

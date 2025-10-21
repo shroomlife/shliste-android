@@ -12,26 +12,26 @@ class ListStoreViewModel : ViewModel() {
     val lists: List<Shliste> get() = _lists
 
     init {
-        addList("🛒🛒🛒")
-        addList("Bae ♥️♥️♥️")
-        addList("🎬🎬🎬")
-        addList("Aufgaben 🧮")
     }
 
     fun addList(name: String) {
-        _lists.add(Shliste(id = UUID.randomUUID().toString(), name = name, color = Color(getRandomColor())))
+        _lists.add(Shliste(uuid = UUID.randomUUID().toString(), name = name, color = Color(getRandomColor())))
     }
 
     fun removeList(id: String) {
-        _lists.removeAll { it.id == id }
+        _lists.removeAll { it.uuid == id }
+    }
+
+    fun getListById(id: String): Shliste? {
+        return _lists.find { it.uuid == id }
     }
 
     fun addItemToList(listId: String, name: String) {
-        val listIndex = _lists.indexOfFirst { it.id == listId }
+        val listIndex = _lists.indexOfFirst { it.uuid == listId }
         if (listIndex != -1) {
             val current = _lists[listIndex]
             val updatedItems = current.items + ListItem(
-                id = UUID.randomUUID().toString(),
+                uuid = UUID.randomUUID().toString(),
                 name = name
             )
             _lists[listIndex] = current.copy(items = updatedItems)
@@ -39,21 +39,21 @@ class ListStoreViewModel : ViewModel() {
     }
 
     fun toggleItemChecked(listId: String, itemId: String) {
-        val listIndex = _lists.indexOfFirst { it.id == listId }
+        val listIndex = _lists.indexOfFirst { it.uuid == listId }
         if (listIndex != -1) {
             val current = _lists[listIndex]
             val updatedItems = current.items.map {
-                if (it.id == itemId) it.copy(checked = !it.checked) else it
+                if (it.uuid == itemId) it.copy(checked = !it.checked) else it
             }
             _lists[listIndex] = current.copy(items = updatedItems)
         }
     }
 
     fun removeItemFromList(listId: String, itemId: String) {
-        val listIndex = _lists.indexOfFirst { it.id == listId }
+        val listIndex = _lists.indexOfFirst { it.uuid == listId }
         if (listIndex != -1) {
             val current = _lists[listIndex]
-            val updatedItems = current.items.filterNot { it.id == itemId }
+            val updatedItems = current.items.filterNot { it.uuid == itemId }
             _lists[listIndex] = current.copy(items = updatedItems)
         }
     }
