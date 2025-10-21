@@ -9,29 +9,29 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun ListCard(
     uuid: String,
-    title: String,
-    content: String,
+    name: String,
     color: Color,
-    onClick: (String) -> Unit
+    onClick: ((String) -> Unit)? = null,
+    content: @Composable () -> Unit
 ) {
     DefaultCard(
         backgroundColor = color,
         header = {
             Text(
-                text = title,
+                text = name,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )
         },
-        content = {
-            Text(
-                text = content,
-                color = Color.DarkGray
-            )
-        },
-        onClick = {
-            onClick(uuid)
-        },
-    )
+        onClick = if(onClick != null) {
+            {
+                onClick(uuid)
+            }
+        } else {
+            null
+        }
+    ) {
+        content()
+    }
 }

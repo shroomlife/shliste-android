@@ -2,6 +2,7 @@ package com.shroomlife.shliste.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,24 +18,27 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun DefaultCard(
-    content: @Composable () -> Unit,
     header: @Composable (() -> Unit)? = null,
     footer: @Composable (() -> Unit)? = null,
     backgroundColor: Color = Color.White,
-    onClick: (() -> Unit)? = null
+    onClick: (() -> Unit)? = null,
+    content: @Composable () -> Unit
 ) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = if(onClick != null) {
+            Modifier
+                .fillMaxWidth()
+                .clickable(enabled = true) {
+                    onClick()
+                }
+        } else {
+            Modifier
+                .fillMaxWidth()
+        },
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(1.dp, Color(0xFFE5E7EB)),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        onClick = {
-            if (onClick != null) {
-                onClick()
-            }
-        }
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column() {
             if (header != null) {

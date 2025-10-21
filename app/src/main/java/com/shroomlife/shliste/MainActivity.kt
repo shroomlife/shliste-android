@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -52,6 +53,18 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun currentBottomBarForDestination(navController: NavHostController): BottomNavType {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val route = navBackStackEntry?.destination?.route
+    return when (route) {
+        Routes.LISTS -> BottomNavType.APP
+        Routes.LIST_DETAIL -> BottomNavType.LIST
+        else -> BottomNavType.NONE
+    }
+}
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShlisteApp() {
@@ -65,7 +78,7 @@ fun ShlisteApp() {
             AppHeader(navController)
         },
         bottomBar = {
-            when (appStore.bottomNavType.value) {
+            when (currentBottomBarForDestination(navController)) {
                 BottomNavType.APP -> AppBottomBar()
                 BottomNavType.LIST -> ListBottomBar()
                 BottomNavType.NONE -> {}
@@ -114,7 +127,6 @@ fun ShlisteApp() {
                 enterTransition = { EnterTransition.None },
                 exitTransition = { ExitTransition.None },
             ) {
-                // Lists
                 composable(Routes.LISTS) { ListsOverviewScreen() }
                 composable(Routes.LIST_CREATE) { ListsCreateScreen() }
                 composable(
@@ -128,7 +140,6 @@ fun ShlisteApp() {
                     }
                     ListsDetailScreen(listId = listId)
                 }
-
                 composable(Routes.RECIPES) { RecipesOverviewScreen() }
                 composable(Routes.PRODUCTS) { ProductsOverviewScreen() }
                 composable(Routes.STORES) { StoresOverviewScreen() }

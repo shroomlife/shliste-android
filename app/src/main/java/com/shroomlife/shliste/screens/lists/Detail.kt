@@ -1,91 +1,96 @@
 package com.shroomlife.shliste.screens.lists
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalListStore
+import com.shroomlife.shliste.LocalNavController
+import com.shroomlife.shliste.R
 import com.shroomlife.shliste.components.AppContainer
+import com.shroomlife.shliste.components.ListCard
+import com.shroomlife.shliste.components.ListItem
 import com.shroomlife.shliste.state.BottomNavType
 
 @Composable
 fun ListsDetailScreen(listId: String) {
     val appStore = LocalAppStore.current
     val listStore = LocalListStore.current
+    val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
+        listStore.setCurrentListId(listId)
         appStore.setBottomNav(BottomNavType.LIST)
     }
 
-    val list = remember(listId) {
-        listStore.getListById(listId)
+    val list = listStore.getCurrentList()
+    LaunchedEffect(list?.items?.size, appStore.scrollState) {
+        val state = appStore.scrollState ?: return@LaunchedEffect
+        state.animateScrollTo(state.maxValue)
     }
 
-    AppContainer() {
-
-        if(list != null) {
-
-            Card(
+    AppContainer(
+        beforePadding = {
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                border = BorderStroke(1.dp, Color(0xFFE5E7EB)),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-            ) {
-                Column() {
-                    // 🏷 Title section
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        list.color,
-                                        Color.White
-                                    )
-                                )
-                            )
-                            .padding(16.dp)
-                    ) {
-                        Text(
-                            text = list.name,
-                            fontSize = 30.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Black
-                        )
+                    .fillMaxWidth()
+                    .background(Color.White)
+                    .clickable(enabled = true) {
+                        navController.popBackStack()
                     }
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.icon_arrow_left),
+                    contentDescription = "Zurück",
+                    modifier = Modifier.size(20.dp)
+                )
+                Text(
+                    text = "Zurück zur Übersicht"
+                )
+            }
 
-                    HorizontalDivider()
-
-                    // 📄 Content section
+            HorizontalDivider()
+        }
+    ) {
+        if(list != null) {
+            ListCard(
+                uuid = list.uuid,
+                name = list.name,
+                color = list.color,
+            ) {
+                if(list.items.isEmpty()) {
+                    Text(
+                        text = "Keine Einträge",
+                        color = Color(0xFF6b7280)
+                    )
+                } else {
                     Column(
-                        modifier = Modifier.padding(16.dp)
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Text(
-                            text = "Hallo Welt"
-                        )
+                        for(item in list.items) {
+                            ListItem(item = item)
+                        }
                     }
                 }
             }
-
         }
-
     }
 }
