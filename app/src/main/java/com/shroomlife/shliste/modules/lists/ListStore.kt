@@ -1,29 +1,37 @@
 package com.shroomlife.shliste.modules.lists
 
+import android.app.Application
+import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import com.shroomlife.shliste.utils.ColorUtils
+import java.io.File
 import java.util.UUID
 import kotlin.collections.plus
+import kotlinx.serialization.json.*
 
-class ListStore : ViewModel() {
+class ListStore(application: Application) : AndroidViewModel(application) {
+    private val context = application.applicationContext
 
     private val _lists = mutableStateListOf<Shliste>()
     private val _currentListId = mutableStateListOf<String?>()
     val lists: List<Shliste> get() = _lists
 
-//    init {
-//    }
+    init {
+        loadListsFromStorage(context)
+    }
 
     fun addList(name: String) {
         _lists.add(
             Shliste(
                 uuid = UUID.randomUUID().toString(),
                 name = name,
-                color = Color(ColorUtils.getRandomColor())
+                color = ColorUtils.getRandomColor()
             )
         )
+        saveListsToStorage(context)
     }
 
 //    fun removeList(id: String) {
@@ -42,21 +50,25 @@ class ListStore : ViewModel() {
     fun checkListItem(itemUuid: String) {
         val currentListId = _currentListId.firstOrNull() ?: return
         checkItemInList(currentListId, itemUuid, true)
+        saveListsToStorage(context)
     }
 
     fun uncheckListItem(itemUuid: String) {
         val currentListId = _currentListId.firstOrNull() ?: return
         checkItemInList(currentListId, itemUuid, false)
+        saveListsToStorage(context)
     }
 
     fun removeListItem(itemUuid: String) {
         val currentListId = _currentListId.firstOrNull() ?: return
         removeItemFromList(currentListId, itemUuid)
+        saveListsToStorage(context)
     }
 
     fun addItemToCurrentList(name: String) {
         val currentListId = _currentListId.firstOrNull() ?: return
         addItemToList(currentListId, name)
+        saveListsToStorage(context)
     }
 
     fun setCurrentListId(id: String) {
@@ -74,9 +86,9 @@ class ListStore : ViewModel() {
             )
             _lists[listIndex] = current.copy(items = updatedItems)
         }
+        saveListsToStorage(context)
     }
 
-    // a function without toggle
     fun checkItemInList(listId: String, itemId: String, checked: Boolean) {
         val listIndex = _lists.indexOfFirst { it.uuid == listId }
         if (listIndex != -1) {
@@ -86,6 +98,7 @@ class ListStore : ViewModel() {
             }
             _lists[listIndex] = current.copy(items = updatedItems)
         }
+        saveListsToStorage(context)
     }
 
     fun removeItemFromList(listId: String, itemId: String) {
@@ -95,5 +108,38 @@ class ListStore : ViewModel() {
             val updatedItems = current.items.filterNot { it.uuid == itemId }
             _lists[listIndex] = current.copy(items = updatedItems)
         }
+        saveListsToStorage(context)
     }
+
+    fun loadListsFromStorage(context: Context) {
+
+        try {
+            val file = getStorageFile(context)
+            if (file.exists()) {
+                val json = file.readText()
+                val loadedLists = Json.decodeFromString<List<Shliste>>(json)
+                _lists.clear()
+                _lists.addAll(loadedLists)
+            }
+            Log.d("ListStore", "Lists loaded from storage.")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+    }
+
+    fun saveListsToStorage(context: Context) {
+        try {
+            val json = Json.encodeToString(_lists)
+            val file = getStorageFile(context)
+            file.writeText(json)
+            Log.d("ListStore", "Lists saved to storage.")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+private fun getStorageFile(context: Context): File {
+    return File(context.filesDir, "lists.json")
 }

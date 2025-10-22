@@ -6,7 +6,7 @@ import androidx.core.graphics.toColorInt
 import kotlin.random.Random
 
 object ColorUtils {
-    fun getRandomColor(): Int {
+    fun getRandomColor(): String {
         var r: Int
         var g: Int
         var b: Int
@@ -17,17 +17,6 @@ object ColorUtils {
             b = Random.nextInt(256)
         } while (r + g + b !in 100..700)
 
-        val alpha = (0.20f * 255).toInt()
-
-        return AndroidColor.argb(alpha, r, g, b)
+        return String.format("#%02X%02X%02X", r, g, b)
     }
-
-    fun getColorFromString(input: String): Color {
-        // Parse string to color int
-        val baseColorInt = input.toColorInt()
-        val baseColor = Color(baseColorInt)
-        // Always apply 20% opacity
-        return baseColor.copy(alpha = 0.2f)
-    }
-
 }

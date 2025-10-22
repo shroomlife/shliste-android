@@ -1,16 +1,18 @@
 package com.shroomlife.shliste.modules.lists
 
-import androidx.compose.ui.graphics.Color
+import kotlinx.serialization.*
 
+@Serializable
 data class ListItem(
     val uuid: String,
     val name: String,
     val checked: Boolean = false
 )
 
+@Serializable
 data class Shliste(
     val uuid: String,
     val name: String,
-    val color: Color,
+    val color: String,
     val items: List<ListItem> = emptyList()
 )

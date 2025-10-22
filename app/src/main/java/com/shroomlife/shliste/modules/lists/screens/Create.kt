@@ -8,24 +8,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.components.AppContainer
-import com.shroomlife.shliste.state.BottomNavType
 
 @Composable
 fun ListsCreateScreen() {
 
-    val appStore = LocalAppStore.current
     val listStore = LocalListStore.current
     val navController = LocalNavController.current
 
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        appStore.setBottomNav(BottomNavType.APP)
     }
 
     AppContainer {
@@ -52,6 +48,7 @@ fun ListsCreateScreen() {
             Button(
                 onClick = {
                     listStore.addList(name)
+                    listStore.saveListsToStorage(context)
                     navController.navigate(Routes.LISTS)
                     Toast.makeText(context, "✅ Liste Erstellt", Toast.LENGTH_SHORT).show()
                 },

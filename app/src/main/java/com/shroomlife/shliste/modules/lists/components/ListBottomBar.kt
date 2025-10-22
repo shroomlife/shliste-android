@@ -1,4 +1,4 @@
-package com.shroomlife.shliste.modules.lists
+package com.shroomlife.shliste.modules.lists.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,7 +39,7 @@ fun ListBottomBar() {
 
     fun handleAddItem() {
         if(name.isNotBlank()) {
-            listStore.addItemToCurrentList(name)
+            listStore.addItemToCurrentList(name.trim())
             name = ""
         }
     }

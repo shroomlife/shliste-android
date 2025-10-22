@@ -10,15 +10,8 @@ import kotlinx.coroutines.launch
 
 class AppStoreViewModel : ViewModel() {
 
-    var bottomNavType = mutableStateOf(BottomNavType.NONE)
-        private set
-
     var scrollState by mutableStateOf<ScrollState?>(null)
         private set
-
-    fun setBottomNav(type: BottomNavType) {
-        bottomNavType.value = type
-    }
 
     fun updateScrollState(state: ScrollState) {
         scrollState = state
