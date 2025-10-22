@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.R
 import com.shroomlife.shliste.modules.lists.ListItem
@@ -53,6 +54,7 @@ fun ListItem(
             ) {
                 Text(
                     text = item.name,
+                    fontSize = 18.sp,
                     color = if(item.checked) {
                         Color.LightGray
                     } else {

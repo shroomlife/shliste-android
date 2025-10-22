@@ -68,7 +68,6 @@ class ListStore(application: Application) : AndroidViewModel(application) {
     fun addItemToCurrentList(name: String) {
         val currentListId = _currentListId.firstOrNull() ?: return
         addItemToList(currentListId, name)
-        saveListsToStorage(context)
     }
 
     fun setCurrentListId(id: String) {
@@ -84,7 +83,10 @@ class ListStore(application: Application) : AndroidViewModel(application) {
                 uuid = UUID.randomUUID().toString(),
                 name = name
             )
-            _lists[listIndex] = current.copy(items = updatedItems)
+            _lists[listIndex] = current.copy(
+                items = updatedItems,
+                lastEditied = System.currentTimeMillis()
+            )
         }
         saveListsToStorage(context)
     }
@@ -96,7 +98,10 @@ class ListStore(application: Application) : AndroidViewModel(application) {
             val updatedItems = current.items.map {
                 if (it.uuid == itemId) it.copy(checked = checked) else it
             }
-            _lists[listIndex] = current.copy(items = updatedItems)
+            _lists[listIndex] = current.copy(
+                items = updatedItems,
+                lastEditied = System.currentTimeMillis()
+            )
         }
         saveListsToStorage(context)
     }
@@ -106,13 +111,15 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         if (listIndex != -1) {
             val current = _lists[listIndex]
             val updatedItems = current.items.filterNot { it.uuid == itemId }
-            _lists[listIndex] = current.copy(items = updatedItems)
+            _lists[listIndex] = current.copy(
+                items = updatedItems,
+                lastEditied = System.currentTimeMillis()
+            )
         }
         saveListsToStorage(context)
     }
 
     fun loadListsFromStorage(context: Context) {
-
         try {
             val file = getStorageFile(context)
             if (file.exists()) {
@@ -125,12 +132,11 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
     }
 
     fun saveListsToStorage(context: Context) {
         try {
-            val json = Json.encodeToString(_lists)
+            val json = Json.encodeToString(_lists.toList())
             val file = getStorageFile(context)
             file.writeText(json)
             Log.d("ListStore", "Lists saved to storage.")

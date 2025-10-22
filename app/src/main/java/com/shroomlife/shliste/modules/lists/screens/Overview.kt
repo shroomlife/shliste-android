@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -23,6 +24,7 @@ import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.R
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.components.AppContainer
+import com.shroomlife.shliste.components.LightBadge
 import com.shroomlife.shliste.modules.lists.components.ListCard
 import com.shroomlife.shliste.state.BottomNavType
 
@@ -32,7 +34,9 @@ fun ListsOverviewScreen() {
     val navController = LocalNavController.current
     val listStore = LocalListStore.current
 
-    val lists = listStore.lists
+    val lists = listStore.lists.sortedByDescending {
+        it.lastEditied
+    }
 
     LaunchedEffect(Unit) {
     }
@@ -79,11 +83,18 @@ fun ListsOverviewScreen() {
                             navController.navigate("lists/$uuid")
                         }
                     ) {
-                        Row() {
-                            Text(
-                                text = "${list.items.size} Einträge",
-                                color = Color(0xFF6b7280)
-                            )
+                        LightBadge(
+                            icon = {
+                                Icon(
+                                    painter = painterResource(R.drawable.icon_products),
+                                    contentDescription = "Einträge",
+                                    tint = Color(0xFF111827),
+                                    modifier = Modifier
+                                        .size(14.dp)
+                                )
+                            }
+                        ) {
+                            Text("${list.items.size} Einträge")
                         }
                     }
                 }

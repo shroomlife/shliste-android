@@ -38,7 +38,9 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShlisteApp() {
+
     val navController = LocalNavController.current
+
     NavHost(
         navController = navController,
         startDestination = Routes.LISTS,

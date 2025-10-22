@@ -24,11 +24,9 @@ fun ListsDetailScreen(listId: String) {
     val appStore = LocalAppStore.current
     val listStore = LocalListStore.current
 
-    LaunchedEffect(Unit) {
-        listStore.setCurrentListId(listId)
-    }
-
+    listStore.setCurrentListId(listId)
     val list = listStore.getCurrentList()
+
     val itemCount = list?.items?.size ?: 0
 
     var previousCount by remember { mutableStateOf(itemCount) }

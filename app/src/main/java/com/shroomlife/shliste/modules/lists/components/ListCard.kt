@@ -20,9 +20,8 @@ fun ListCard(
         header = {
             Text(
                 text = name,
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
+                fontSize = 36.sp,
+                fontWeight = FontWeight.Bold
             )
         },
         onClick = if (onClick != null) {
