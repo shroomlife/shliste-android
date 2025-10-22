@@ -1,4 +1,4 @@
-package com.shroomlife.shliste.components
+package com.shroomlife.shliste.modules.lists.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,7 +20,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.R
-import com.shroomlife.shliste.state.ListItem
+import com.shroomlife.shliste.modules.lists.ListItem
 
 @Composable
 fun ListItem(

@@ -1,4 +1,4 @@
-package com.shroomlife.shliste.screens.lists
+package com.shroomlife.shliste.modules.lists.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*

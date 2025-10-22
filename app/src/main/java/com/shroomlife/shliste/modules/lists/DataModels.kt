@@ -1,4 +1,4 @@
-package com.shroomlife.shliste.state
+package com.shroomlife.shliste.modules.lists
 
 import androidx.compose.ui.graphics.Color
 

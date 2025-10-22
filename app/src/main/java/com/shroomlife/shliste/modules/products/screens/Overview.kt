@@ -1,12 +1,12 @@
-package com.shroomlife.shliste.screens.recipes
+package com.shroomlife.shliste.modules.products.screens
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.shroomlife.shliste.components.AppContainer
 
 @Composable
-fun RecipesOverviewScreen() {
+fun ProductsOverviewScreen() {
     AppContainer() {
-        Text("Hallo Rezepte")
+        Text("Hallo Produkte")
     }
 }

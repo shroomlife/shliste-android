@@ -1,27 +1,34 @@
-package com.shroomlife.shliste.state
+package com.shroomlife.shliste.modules.lists
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
-import com.shroomlife.shliste.utils.ColorUtils.getRandomColor
+import com.shroomlife.shliste.utils.ColorUtils
 import java.util.UUID
+import kotlin.collections.plus
 
-class ListStoreViewModel : ViewModel() {
+class ListStore : ViewModel() {
 
     private val _lists = mutableStateListOf<Shliste>()
     private val _currentListId = mutableStateListOf<String?>()
     val lists: List<Shliste> get() = _lists
 
-    init {
-    }
+//    init {
+//    }
 
     fun addList(name: String) {
-        _lists.add(Shliste(uuid = UUID.randomUUID().toString(), name = name, color = Color(getRandomColor())))
+        _lists.add(
+            Shliste(
+                uuid = UUID.randomUUID().toString(),
+                name = name,
+                color = Color(ColorUtils.getRandomColor())
+            )
+        )
     }
 
-    fun removeList(id: String) {
-        _lists.removeAll { it.uuid == id }
-    }
+//    fun removeList(id: String) {
+//        _lists.removeAll { it.uuid == id }
+//    }
 
     fun getListById(id: String): Shliste? {
         return _lists.find { it.uuid == id }
@@ -76,17 +83,6 @@ class ListStoreViewModel : ViewModel() {
             val current = _lists[listIndex]
             val updatedItems = current.items.map {
                 if (it.uuid == itemId) it.copy(checked = checked) else it
-            }
-            _lists[listIndex] = current.copy(items = updatedItems)
-        }
-    }
-
-    fun toggleItemChecked(listId: String, itemId: String) {
-        val listIndex = _lists.indexOfFirst { it.uuid == listId }
-        if (listIndex != -1) {
-            val current = _lists[listIndex]
-            val updatedItems = current.items.map {
-                if (it.uuid == itemId) it.copy(checked = !it.checked) else it
             }
             _lists[listIndex] = current.copy(items = updatedItems)
         }

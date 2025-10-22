@@ -1,10 +1,11 @@
-package com.shroomlife.shliste.components
+package com.shroomlife.shliste.modules.lists.components
 
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.shroomlife.shliste.components.DefaultCard
 
 @Composable
 fun ListCard(
@@ -24,7 +25,7 @@ fun ListCard(
                 color = Color.Black
             )
         },
-        onClick = if(onClick != null) {
+        onClick = if (onClick != null) {
             {
                 onClick(uuid)
             }

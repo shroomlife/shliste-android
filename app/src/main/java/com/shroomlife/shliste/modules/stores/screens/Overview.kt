@@ -1,4 +1,4 @@
-package com.shroomlife.shliste.screens.stores
+package com.shroomlife.shliste.modules.stores.screens
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

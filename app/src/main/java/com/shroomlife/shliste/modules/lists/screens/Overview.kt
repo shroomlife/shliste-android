@@ -1,4 +1,4 @@
-package com.shroomlife.shliste.screens.lists
+package com.shroomlife.shliste.modules.lists.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +16,7 @@ import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.components.AppContainer
-import com.shroomlife.shliste.components.ListCard
+import com.shroomlife.shliste.modules.lists.components.ListCard
 import com.shroomlife.shliste.state.BottomNavType
 
 @Composable

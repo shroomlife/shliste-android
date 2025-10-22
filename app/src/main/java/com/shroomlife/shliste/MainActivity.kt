@@ -29,14 +29,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.shroomlife.shliste.components.AppBottomBar
 import com.shroomlife.shliste.components.AppHeader
-import com.shroomlife.shliste.components.ListBottomBar
+import com.shroomlife.shliste.modules.lists.ListBottomBar
 import com.shroomlife.shliste.ui.theme.ShlisteTheme
-import com.shroomlife.shliste.screens.lists.ListsCreateScreen
-import com.shroomlife.shliste.screens.lists.ListsDetailScreen
-import com.shroomlife.shliste.screens.lists.ListsOverviewScreen
-import com.shroomlife.shliste.screens.products.ProductsOverviewScreen
-import com.shroomlife.shliste.screens.recipes.RecipesOverviewScreen
-import com.shroomlife.shliste.screens.stores.StoresOverviewScreen
+import com.shroomlife.shliste.modules.lists.screens.ListsCreateScreen
+import com.shroomlife.shliste.modules.lists.screens.ListsDetailScreen
+import com.shroomlife.shliste.modules.lists.screens.ListsOverviewScreen
+import com.shroomlife.shliste.modules.products.screens.ProductsOverviewScreen
+import com.shroomlife.shliste.modules.recipes.screens.RecipesOverviewScreen
+import com.shroomlife.shliste.modules.stores.screens.StoresOverviewScreen
 import com.shroomlife.shliste.state.BottomNavType
 
 class MainActivity : ComponentActivity() {

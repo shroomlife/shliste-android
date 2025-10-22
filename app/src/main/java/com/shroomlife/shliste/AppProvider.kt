@@ -7,7 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.shroomlife.shliste.state.AppStoreViewModel
-import com.shroomlife.shliste.state.ListStoreViewModel
+import com.shroomlife.shliste.modules.lists.ListStore
 
 val LocalNavController = staticCompositionLocalOf<NavHostController> {
     error("No NavController provided")
@@ -17,7 +17,7 @@ val LocalAppStore = staticCompositionLocalOf<AppStoreViewModel> {
     error("No AppStore provided")
 }
 
-val LocalListStore = staticCompositionLocalOf<ListStoreViewModel> {
+val LocalListStore = staticCompositionLocalOf<ListStore> {
     error("No ListStore provided")
 }
 
@@ -27,7 +27,7 @@ fun AppProvider(
 ) {
     val navController = rememberNavController()
     val appStore: AppStoreViewModel = viewModel()
-    val listStore: ListStoreViewModel = viewModel()
+    val listStore: ListStore = viewModel()
 
     CompositionLocalProvider(
         LocalNavController provides navController,
