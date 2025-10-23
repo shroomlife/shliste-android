@@ -20,18 +20,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalListStore
+import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.R
+import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.modules.lists.ListItem
+import com.shroomlife.shliste.navigateTo
 
 @Composable
 fun ListItem(
     item: ListItem
 ) {
     val listStore = LocalListStore.current
+    val navController = LocalNavController.current
 
     Box(
         modifier = Modifier
@@ -48,13 +51,22 @@ fun ListItem(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp)
+                    .clickable {
+                        navigateTo(
+                            navController,
+                            Routes.listItemEdit(item.uuid)
+                        )
+                    }
+                    .padding(
+                        horizontal = 14.dp,
+                        vertical = 8.dp
+                    )
                     .fillMaxHeight(),
                 contentAlignment = Alignment.CenterStart
             ) {
                 Text(
                     text = item.name,
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     color = if(item.checked) {
                         Color.LightGray
                     } else {

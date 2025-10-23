@@ -34,9 +34,12 @@ val AppTypography = Typography(
     bodyLarge = TextStyle(
         fontFamily = ZainFontFamily,
         fontWeight = FontWeight.Normal,
+        fontSize = 24.sp,
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = ZainFontFamily,
+        fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
     ),
     labelSmall = TextStyle(
         fontFamily = ZainFontFamily,

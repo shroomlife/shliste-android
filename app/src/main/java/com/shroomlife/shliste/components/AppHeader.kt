@@ -15,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.shroomlife.shliste.AppDestinations
 import com.shroomlife.shliste.R
+import com.shroomlife.shliste.navigateTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,8 +32,8 @@ fun AppHeader(
         modifier = Modifier.background(
             brush = Brush.verticalGradient(
                 colors = listOf(
-                    Color(0xFFFDECF5), // rgba(253,236,245,1)
-                    Color(0xCCFDECF5)  // rgba(253,236,245,0.8) → 0xCC = 80% opacity
+                    Color(0xFFFDECF5),
+                    Color(0xCCFDECF5)
                 )
             )
         ),
@@ -42,7 +43,9 @@ fun AppHeader(
                 contentDescription = "shliste",
                 modifier = Modifier
                     .width(120.dp)
-                    .clickable { navController.navigate(AppDestinations.LISTS.route) },
+                    .clickable {
+                        navigateTo(navController, AppDestinations.LISTS.route)
+                   },
                 tint = Color(0xFFE064B2)
             )
         },

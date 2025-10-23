@@ -42,6 +42,28 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         return _lists.find { it.uuid == id }
     }
 
+    fun getListItemById(itemId: String): ListItem? {
+        _lists.forEach { list ->
+            list.items.forEach { item ->
+                if (item.uuid == itemId) {
+                    return item
+                }
+            }
+        }
+        return null
+    }
+
+    fun getListIdByListItemId(itemId: String): String? {
+        _lists.forEach { list ->
+            list.items.forEach { item ->
+                if (item.uuid == itemId) {
+                    return list.uuid
+                }
+            }
+        }
+        return null
+    }
+
     fun getCurrentList(): Shliste? {
         val currentListId = _currentListId.firstOrNull() ?: return null
         return getListById(currentListId)
@@ -68,6 +90,42 @@ class ListStore(application: Application) : AndroidViewModel(application) {
     fun addItemToCurrentList(name: String) {
         val currentListId = _currentListId.firstOrNull() ?: return
         addItemToList(currentListId, name)
+    }
+
+    fun updateListName(listId: String, newName: String) {
+        val listIndex = _lists.indexOfFirst { it.uuid == listId }
+        if (listIndex != -1) {
+            val current = _lists[listIndex]
+            _lists[listIndex] = current.copy(
+                name = newName,
+                lastEditied = System.currentTimeMillis()
+            )
+        }
+        saveListsToStorage(context)
+    }
+
+    fun updateListItemName(listItemId: String, newName: String): String {
+        val listIndex = _lists.indexOfFirst { list ->
+            list.items.any { it.uuid == listItemId }
+        }
+        if (listIndex != -1) {
+            val currentList = _lists[listIndex]
+            val updatedItems = currentList.items.map { item ->
+                if (item.uuid == listItemId) {
+                    item.copy(
+                        name = newName
+                    )
+                } else item
+            }
+
+            _lists[listIndex] = currentList.copy(
+                items = updatedItems,
+                lastEditied = System.currentTimeMillis()
+            )
+            saveListsToStorage(context)
+            return currentList.uuid
+        }
+        return ""
     }
 
     fun setCurrentListId(id: String) {

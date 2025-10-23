@@ -26,10 +26,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.R
+import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
 fun ListBottomBar() {
@@ -65,12 +68,16 @@ fun ListBottomBar() {
                     value = name,
                     onValueChange = { name = it },
                     singleLine = true,
-                    placeholder = { Text("Neuer Eintrag") },
+                    placeholder = { Text("Neuer Eintrag", fontSize = 20.sp, fontFamily = ZainFontFamily) },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedContainerColor = Color.White,
                         unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(
+                        fontSize = 20.sp,
+                        fontFamily = ZainFontFamily
                     ),
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
@@ -97,7 +104,7 @@ fun ListBottomBar() {
                             handleAddItem()
                         }
                         .align(Alignment.CenterVertically)
-                        .padding(16.dp),
+                        .padding(18.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(

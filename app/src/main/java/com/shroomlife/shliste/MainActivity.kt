@@ -12,6 +12,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.shroomlife.shliste.modules.lists.screens.ListEditScreen
+import com.shroomlife.shliste.modules.lists.screens.ListItemEditScreen
 import com.shroomlife.shliste.ui.theme.ShlisteTheme
 import com.shroomlife.shliste.modules.lists.screens.ListsCreateScreen
 import com.shroomlife.shliste.modules.lists.screens.ListsDetailScreen
@@ -55,11 +57,34 @@ fun ShlisteApp() {
         ) { backStackEntry ->
             val listId = backStackEntry.arguments?.getString("listId")
             if (listId === null) {
-                navController.navigate(Routes.LISTS)
+                navigateTo(navController, Routes.LISTS)
                 return@composable
             }
             ListsDetailScreen(listId = listId)
         }
+        composable(
+            route = Routes.LIST_EDIT,
+            arguments = listOf(navArgument("listId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val listId = backStackEntry.arguments?.getString("listId")
+            if (listId === null) {
+                navigateTo(navController, Routes.LISTS)
+                return@composable
+            }
+            ListEditScreen(listId = listId)
+        }
+        composable(
+            route = Routes.LIST_ITEM_EDIT,
+            arguments = listOf(navArgument("listItemId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val listItemId = backStackEntry.arguments?.getString("listItemId")
+            if (listItemId === null) {
+                navigateTo(navController, Routes.LISTS)
+                return@composable
+            }
+            ListItemEditScreen(listItemId)
+        }
+
         composable(Routes.RECIPES) { RecipesOverviewScreen() }
         composable(Routes.PRODUCTS) { ProductsOverviewScreen() }
         composable(Routes.STORES) { StoresOverviewScreen() }

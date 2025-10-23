@@ -1,7 +1,12 @@
 package com.shroomlife.shliste.modules.lists.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -9,25 +14,38 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalListStore
+import com.shroomlife.shliste.LocalNavController
+import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.components.AppContainer
 import com.shroomlife.shliste.components.BackButton
 import com.shroomlife.shliste.modules.lists.components.ListBottomBar
 import com.shroomlife.shliste.modules.lists.components.ListCard
 import com.shroomlife.shliste.modules.lists.components.ListItem
+import com.shroomlife.shliste.navigateTo
 
 @Composable
 fun ListsDetailScreen(listId: String) {
+
+    val context = LocalContext.current
     val appStore = LocalAppStore.current
     val listStore = LocalListStore.current
+    val navController = LocalNavController.current
 
     listStore.setCurrentListId(listId)
     val list = listStore.getCurrentList()
+    if(list == null) {
+        Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show()
+        navigateTo(navController, Routes.LISTS)
+        return
+    }
 
-    val itemCount = list?.items?.size ?: 0
+    val itemCount = list.items.size
 
     var previousCount by remember { mutableStateOf(itemCount) }
     var initialized by remember { mutableStateOf(false) }
@@ -47,19 +65,21 @@ fun ListsDetailScreen(listId: String) {
 
     AppContainer(
         beforePadding = {
-            BackButton()
+            BackButton(
+                to = Routes.LISTS
+            )
         },
         bottomBar = {
             ListBottomBar()
         }
     ) {
-        if(list != null) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             ListCard(
                 uuid = list.uuid,
                 name = list.name,
-                color = Color(
-                    android.graphics.Color.parseColor(list.color)
-                ),
+                color = list.color,
             ) {
                 if(list.items.isEmpty()) {
                     Text(
@@ -75,6 +95,16 @@ fun ListsDetailScreen(listId: String) {
                         }
                     }
                 }
+            }
+            OutlinedButton(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                onClick = {
+                    navigateTo(navController, Routes.listEdit(listId))
+                }
+            ) {
+                Text(text = "Bearbeite Liste", style = MaterialTheme.typography.bodyMedium)
             }
         }
     }

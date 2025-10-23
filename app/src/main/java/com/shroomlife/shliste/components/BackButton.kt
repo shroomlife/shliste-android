@@ -19,24 +19,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.R
+import com.shroomlife.shliste.navigateTo
 
 @Composable
 fun BackButton(
     caption: String = "Zurück zur Übersicht",
     icon: Int = R.drawable.icon_arrow_left,
-    iconAlt: String = "Zurück"
+    iconAlt: String = "Zurück",
+    to: String? = null
 ) {
-
-    val navController  = LocalNavController.current
+    val navController = LocalNavController.current
 
     Column {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .clickable(enabled = true) {
-                    navController.popBackStack()
+                .clickable {
+                    if (to != null) {
+                        val popped = navController.popBackStack(to, inclusive = false)
+                        if (!popped) {
+                            navigateTo(navController, to)
+                        }
+                    } else {
+                        navController.popBackStack()
+                    }
                 }
                 .padding(16.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -47,9 +54,7 @@ fun BackButton(
                 contentDescription = iconAlt,
                 modifier = Modifier.size(20.dp)
             )
-            Text(
-                text = caption
-            )
+            Text(text = caption)
         }
 
         HorizontalDivider()

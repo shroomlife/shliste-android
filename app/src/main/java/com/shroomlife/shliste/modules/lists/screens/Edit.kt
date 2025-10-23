@@ -2,13 +2,26 @@ package com.shroomlife.shliste.modules.lists.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,30 +41,37 @@ import com.shroomlife.shliste.ui.theme.PrimaryColor
 import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
-fun ListsCreateScreen() {
+fun ListEditScreen(listId: String) {
 
     val listStore = LocalListStore.current
     val navController = LocalNavController.current
     val context = LocalContext.current
 
-    var name by remember { mutableStateOf("") }
 
-    fun handleAddList() {
-        if(name.isNotBlank()) {
-            listStore.addList(name.trim())
-            navigateTo(navController, Routes.LISTS)
-            Toast.makeText(context, "✅ Liste Erstellt", Toast.LENGTH_SHORT).show()
-        }
+    val list = listStore.getListById(listId)
+    if(list == null) {
+        Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show()
+        navigateTo(navController, Routes.LISTS)
+        return
     }
 
-    LaunchedEffect(Unit) {
-        name = ""
+    var name by remember { mutableStateOf(list.name) }
+
+    fun handleSaveList() {
+        if(name.isNotBlank()) {
+            listStore.updateListName(listId, name.trim())
+            navigateTo(navController, Routes.listDetail(listId))
+            Toast.makeText(context, "Gespeichert", Toast.LENGTH_SHORT).show()
+        }
     }
 
     AppContainer(
         disableScroll = true,
         beforePadding = {
-            BackButton()
+            BackButton(
+                to = Routes.listDetail(listId),
+                caption = "Zurück zur Liste"
+            )
         }
     ) {
         Column(
@@ -66,8 +86,8 @@ fun ListsCreateScreen() {
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
 
-            ) {
-                Text("Neue Liste", style = MaterialTheme.typography.displayLarge)
+                ) {
+                Text("Bearbeite Liste", style = MaterialTheme.typography.displayLarge)
 
                 TextField(
                     value = name,
@@ -97,14 +117,14 @@ fun ListsCreateScreen() {
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            handleAddList()
+                            handleSaveList()
                         }
                     )
                 )
 
                 Button(
                     onClick = {
-                        handleAddList()
+                        handleSaveList()
                     },
                     modifier = Modifier
                         .fillMaxWidth(),

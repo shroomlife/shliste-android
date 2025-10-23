@@ -3,22 +3,20 @@ package com.shroomlife.shliste.modules.lists.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.R
@@ -26,7 +24,7 @@ import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.components.AppContainer
 import com.shroomlife.shliste.components.LightBadge
 import com.shroomlife.shliste.modules.lists.components.ListCard
-import com.shroomlife.shliste.state.BottomNavType
+import com.shroomlife.shliste.navigateTo
 
 @Composable
 fun ListsOverviewScreen() {
@@ -45,7 +43,7 @@ fun ListsOverviewScreen() {
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
-                    navController.navigate(Routes.LIST_CREATE)
+                    navigateTo(navController, Routes.LIST_CREATE)
                 },
                 containerColor = Color(0xFFE064B2),
                 icon = {
@@ -56,7 +54,7 @@ fun ListsOverviewScreen() {
                         modifier = Modifier.width(24.dp)
                     )
                 },
-                text = { Text(text = "Neue Liste", color = Color(0xFFFFFFFF)) },
+                text = { Text(text = "Neue Liste", color = Color(0xFFFFFFFF), style = MaterialTheme.typography.bodyLarge) },
             )
         }
     ) {
@@ -76,11 +74,9 @@ fun ListsOverviewScreen() {
                     ListCard(
                         uuid = list.uuid,
                         name = list.name,
-                        color = Color(
-                            android.graphics.Color.parseColor(list.color)
-                        ),
+                        color = list.color,
                         onClick = { uuid ->
-                            navController.navigate("lists/$uuid")
+                            navigateTo(navController, Routes.listDetail(uuid))
                         }
                     ) {
                         LightBadge(
@@ -94,7 +90,14 @@ fun ListsOverviewScreen() {
                                 )
                             }
                         ) {
-                            Text("${list.items.size} Einträge")
+                            Text(
+                                text = if(list.items.size == 1) {
+                                    "1 Eintrag"
+                                } else {
+                                    "${list.items.size} Einträge"
+                                },
+                                style = MaterialTheme.typography.bodySmall
+                            )
                         }
                     }
                 }

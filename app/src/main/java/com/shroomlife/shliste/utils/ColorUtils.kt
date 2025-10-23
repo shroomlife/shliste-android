@@ -19,4 +19,15 @@ object ColorUtils {
 
         return String.format("#%02X%02X%02X", r, g, b)
     }
+
+    fun colorWith20Opacity(hex: String): Color {
+        val cleanHex = hex.removePrefix("#")
+        val colorInt = cleanHex.toLong(16)
+        val r = ((colorInt shr 16) and 0xFF).toInt()
+        val g = ((colorInt shr 8) and 0xFF).toInt()
+        val b = (colorInt and 0xFF).toInt()
+        val alpha = 0.2f
+        return Color(red = r / 255f, green = g / 255f, blue = b / 255f, alpha = alpha)
+    }
+
 }

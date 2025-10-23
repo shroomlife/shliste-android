@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.shroomlife.shliste.AppDestinations
 import com.shroomlife.shliste.LocalNavController
+import com.shroomlife.shliste.navigateTo
 
 @Composable
 fun AppBottomBar() {
@@ -43,7 +44,7 @@ fun AppBottomBar() {
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            navController.navigate(destination.route)
+                            navigateTo(navController, destination.route)
                         }
                         .padding(bottom = paddingBottom, top = paddingTop),
                     contentAlignment = Alignment.Center

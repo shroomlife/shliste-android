@@ -23,6 +23,7 @@ fun AppContainer(
     floatingActionButton: @Composable (() -> Unit)? = null,
     bottomBar: @Composable (() -> Unit)? = null,
     scrollState: ScrollState = rememberScrollState(),
+    disableScroll: Boolean = false,
     content: @Composable () -> Unit
 ) {
 
@@ -61,10 +62,17 @@ fun AppContainer(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.White)
-                    .verticalScroll(scrollState)
+                    .then(
+                        if(disableScroll) {
+                            Modifier
+                        } else {
+                            Modifier
+                                .verticalScroll(scrollState)
+                        }
+                    )
                     .padding(16.dp)
             ) {
-                content()
+                content.invoke()
             }
             afterPadding?.invoke()
         }
