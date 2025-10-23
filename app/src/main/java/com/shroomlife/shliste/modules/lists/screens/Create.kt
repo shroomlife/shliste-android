@@ -39,7 +39,7 @@ fun ListsCreateScreen() {
     fun handleAddList() {
         if(name.isNotBlank()) {
             listStore.addList(name.trim())
-            navigateTo(navController, Routes.LISTS)
+            navigateTo(navController, Routes.LISTS, Routes.LIST_CREATE)
             Toast.makeText(context, "✅ Liste Erstellt", Toast.LENGTH_SHORT).show()
         }
     }

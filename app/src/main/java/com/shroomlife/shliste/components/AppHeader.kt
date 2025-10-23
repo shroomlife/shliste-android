@@ -29,23 +29,24 @@ fun AppHeader(
             navigationIconContentColor = Color.Unspecified,
             titleContentColor = Color.Unspecified
         ),
-        modifier = Modifier.background(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    Color(0xFFFDECF5),
-                    Color(0xCCFDECF5)
+        modifier = Modifier
+            .clickable {
+                navigateTo(navController, AppDestinations.LISTS.route)
+            }
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFFFDECF5),
+                        Color(0xCCFDECF5)
+                    )
                 )
-            )
         ),
         title = {
             Icon(
                 painter = painterResource(id = R.drawable.ci_brand),
                 contentDescription = "shliste",
                 modifier = Modifier
-                    .width(120.dp)
-                    .clickable {
-                        navigateTo(navController, AppDestinations.LISTS.route)
-                   },
+                    .width(120.dp),
                 tint = Color(0xFFE064B2)
             )
         },

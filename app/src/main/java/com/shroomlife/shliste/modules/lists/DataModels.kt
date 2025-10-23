@@ -6,6 +6,7 @@ import kotlinx.serialization.*
 data class ListItem(
     val uuid: String,
     val name: String,
+    val quantity: Int = 1,
     val checked: Boolean = false
 )
 

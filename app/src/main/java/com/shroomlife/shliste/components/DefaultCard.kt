@@ -24,6 +24,7 @@ fun DefaultCard(
     footer: @Composable (() -> Unit)? = null,
     backgroundColor: Color = Color.White,
     onClick: (() -> Unit)? = null,
+    onClickHeader: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     Card(
@@ -47,6 +48,15 @@ fun DefaultCard(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .then(
+                            if(onClickHeader != null) {
+                                Modifier.clickable(enabled = true) {
+                                    onClickHeader()
+                                }
+                            } else {
+                                Modifier
+                            }
+                        )
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(

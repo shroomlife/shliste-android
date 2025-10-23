@@ -1,5 +1,7 @@
 package com.shroomlife.shliste
 
+import androidx.navigation.NavController
+
 object Routes {
     const val LISTS = "lists"
     const val RECIPES = "recipes"
@@ -20,11 +22,19 @@ object Routes {
 }
 
 fun navigateTo(
-    navController: androidx.navigation.NavController,
-    route: String
+    navController: NavController,
+    route: String,
+    popUpToRoute: String? = null
 ) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
     if (currentRoute != route) {
-        navController.navigate(route)
+        navController.navigate(route) {
+            popUpToRoute?.let {
+                popUpTo(it) {
+                    inclusive = true
+                }
+            }
+        }
     }
 }
+

@@ -6,6 +6,6 @@ enum class AppDestinations(
 ) {
     LISTS("Listen", R.drawable.icon_lists, "lists"),
     RECIPES("Rezepte", R.drawable.icon_recipes, "recipes"),
-    PRODUCTS("Produkte", R.drawable.icon_products, "products"),
-    STORES("Supermärkte", R.drawable.icon_stores, "stores"),
+//    PRODUCTS("Produkte", R.drawable.icon_products, "products"),
+//    STORES("Supermärkte", R.drawable.icon_stores, "stores"),
 }

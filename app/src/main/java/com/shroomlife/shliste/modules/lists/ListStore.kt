@@ -34,9 +34,10 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         saveListsToStorage(context)
     }
 
-//    fun removeList(id: String) {
-//        _lists.removeAll { it.uuid == id }
-//    }
+    fun removeList(id: String) {
+        _lists.removeAll { it.uuid == id }
+        saveListsToStorage(context)
+    }
 
     fun getListById(id: String): Shliste? {
         return _lists.find { it.uuid == id }

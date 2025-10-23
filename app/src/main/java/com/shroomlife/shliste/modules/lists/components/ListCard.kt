@@ -14,6 +14,7 @@ fun ListCard(
     name: String,
     color: String,
     onClick: ((String) -> Unit)? = null,
+    onClickHeader: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
     DefaultCard(
@@ -31,7 +32,8 @@ fun ListCard(
             }
         } else {
             null
-        }
+        },
+        onClickHeader = onClickHeader
     ) {
         content()
     }

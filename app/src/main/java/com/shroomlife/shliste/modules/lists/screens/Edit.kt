@@ -60,7 +60,7 @@ fun ListEditScreen(listId: String) {
     fun handleSaveList() {
         if(name.isNotBlank()) {
             listStore.updateListName(listId, name.trim())
-            navigateTo(navController, Routes.listDetail(listId))
+            navigateTo(navController, Routes.listDetail(listId), Routes.listEdit(listId))
             Toast.makeText(context, "Gespeichert", Toast.LENGTH_SHORT).show()
         }
     }
