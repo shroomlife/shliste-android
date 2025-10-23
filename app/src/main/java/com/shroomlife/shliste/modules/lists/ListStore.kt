@@ -88,9 +88,9 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         saveListsToStorage(context)
     }
 
-    fun addItemToCurrentList(name: String) {
+    fun addItemToCurrentList(name: String, quantity: Int = 1) {
         val currentListId = _currentListId.firstOrNull() ?: return
-        addItemToList(currentListId, name)
+        addItemToList(currentListId, name, quantity)
     }
 
     fun updateListName(listId: String, newName: String) {
@@ -129,18 +129,43 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         return ""
     }
 
+    fun updateListItemQuantity(listItemId: String, newQuantity: Int): String {
+        val listIndex = _lists.indexOfFirst { list ->
+            list.items.any { it.uuid == listItemId }
+        }
+        if (listIndex != -1) {
+            val currentList = _lists[listIndex]
+            val updatedItems = currentList.items.map { item ->
+                if (item.uuid == listItemId) {
+                    item.copy(
+                        quantity = newQuantity
+                    )
+                } else item
+            }
+
+            _lists[listIndex] = currentList.copy(
+                items = updatedItems,
+                lastEditied = System.currentTimeMillis()
+            )
+            saveListsToStorage(context)
+            return currentList.uuid
+        }
+        return ""
+    }
+
     fun setCurrentListId(id: String) {
         _currentListId.clear()
         _currentListId.add(id)
     }
 
-    fun addItemToList(listId: String, name: String) {
+    fun addItemToList(listId: String, name: String, quantity: Int = 1) {
         val listIndex = _lists.indexOfFirst { it.uuid == listId }
         if (listIndex != -1) {
             val current = _lists[listIndex]
             val updatedItems = current.items + ListItem(
                 uuid = UUID.randomUUID().toString(),
-                name = name
+                name = name,
+                quantity = quantity
             )
             _lists[listIndex] = current.copy(
                 items = updatedItems,

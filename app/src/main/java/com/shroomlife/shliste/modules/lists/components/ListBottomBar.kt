@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,18 +33,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.R
+import com.shroomlife.shliste.components.NumberSliderInput
 import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
 fun ListBottomBar() {
 
     val listStore = LocalListStore.current
-    var name by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf<String>("") }
+    var quantity by remember { mutableStateOf<Int>(1) }
 
     fun handleAddItem() {
         if(name.isNotBlank()) {
-            listStore.addItemToCurrentList(name.trim())
+            listStore.addItemToCurrentList(name.trim(), quantity)
             name = ""
+            quantity = 1
         }
     }
 
@@ -51,6 +55,7 @@ fun ListBottomBar() {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
+            .imePadding()
             .padding(bottom = 24.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -64,6 +69,13 @@ fun ListBottomBar() {
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
+                NumberSliderInput(
+                    modifier = Modifier.padding(end = 8.dp),
+                    value = quantity,
+                    onValueChange = { quantity = it }
+                )
+
                 TextField(
                     value = name,
                     onValueChange = { name = it },

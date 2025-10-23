@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalListStore
@@ -28,6 +29,9 @@ import com.shroomlife.shliste.R
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.modules.lists.ListItem
 import com.shroomlife.shliste.navigateTo
+import com.shroomlife.shliste.ui.theme.PrimaryColor
+import com.shroomlife.shliste.ui.theme.SecondaryColor
+import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
 fun ListItem(
@@ -48,6 +52,36 @@ fun ListItem(
                 .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
+            if(item.quantity > 1) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .background(
+                            color = if(item.checked) {
+                                Color.LightGray
+                            } else {
+                                SecondaryColor
+                            },
+                            shape = RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp)
+                        )
+                        .padding(14.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "${item.quantity}x",
+                        fontSize = 20.sp,
+                        color = if(item.checked) {
+                            Color.Gray
+                        } else {
+                            PrimaryColor
+                        },
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = ZainFontFamily
+                    )
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .weight(1f)

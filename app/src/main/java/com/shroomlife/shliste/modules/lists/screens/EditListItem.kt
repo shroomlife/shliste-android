@@ -24,11 +24,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalListStore
@@ -49,18 +53,24 @@ fun ListItemEditScreen(listItemId: String) {
 
     val listItem = listStore.getListItemById(listItemId)
     val listId = listStore.getListIdByListItemId(listItemId)
+
     if(listItem == null || listId == null) {
         Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show()
         navigateTo(navController, Routes.LISTS)
         return
     }
 
-    var itemName by remember { mutableStateOf(listItem.name) }
+    var itemName by remember { mutableStateOf<String>(listItem.name) }
+    var itemQuantity by remember { mutableStateOf(listItem.quantity.toString()) }
 
+    val focusManager = LocalFocusManager.current
+    val quantityFocusRequester = remember { FocusRequester() }
 
     fun handleSaveListItem() {
-        if(itemName.isNotBlank()) {
-            val listId = listStore.updateListItemName(listItemId, itemName.trim())
+        val quantityInt = itemQuantity.toIntOrNull() ?: 0
+        if(itemName.isNotBlank() && quantityInt > 0) {
+            listStore.updateListItemName(listItemId, itemName.trim())
+            listStore.updateListItemQuantity(listItemId, itemQuantity.toInt())
             navigateTo(navController, Routes.listDetail(listId))
             Toast.makeText(context, "Gespeichert", Toast.LENGTH_SHORT).show()
         }
@@ -95,6 +105,14 @@ fun ListItemEditScreen(listItemId: String) {
                     onValueChange = { itemName = it },
                     singleLine = true,
                     label = { Text("Name des Eintrags", fontFamily = ZainFontFamily, fontSize = 14.sp) },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            quantityFocusRequester.requestFocus()
+                        }
+                    ),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
                         focusedIndicatorColor = Color.Transparent,
@@ -112,15 +130,47 @@ fun ListItemEditScreen(listItemId: String) {
                         .fillMaxWidth()
                         .height(64.dp)
                         .padding(end = 8.dp)
-                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp)),
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                )
+
+                TextField(
+                    value = itemQuantity,
+                    onValueChange = { newValue ->
+                        if (newValue.all { it.isDigit() }) {
+                            itemQuantity = newValue
+                        }
+                    },
+                    singleLine = true,
+                    label = { Text("Anzahl", fontFamily = ZainFontFamily, fontSize = 14.sp) },
                     keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
+                            focusManager.clearFocus()
                             handleSaveListItem()
                         }
-                    )
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedContainerColor = Color.White,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(
+                        fontSize = 24.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = ZainFontFamily
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(64.dp)
+                        .padding(end = 8.dp)
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
+                        .focusRequester(quantityFocusRequester)
                 )
 
                 Button(

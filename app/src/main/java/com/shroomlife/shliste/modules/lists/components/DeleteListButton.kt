@@ -1,7 +1,10 @@
 package com.shroomlife.shliste.modules.lists.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
@@ -15,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -35,7 +39,9 @@ fun DeleteListButton(
                 Icon(
                     painterResource(R.drawable.icon_trash),
                     contentDescription = "Löschen",
-                    tint = Color.Red
+                    tint = Color.Red,
+                    modifier = Modifier
+                        .size(32.dp)
                 )
             },
             text = { Text("Bist du sicher, dass du die Liste löschen möchtest?") },
@@ -64,13 +70,20 @@ fun DeleteListButton(
         colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
         shape = RoundedCornerShape(8.dp),
         border = BorderStroke(1.dp, Color.Red),
-        onClick = { showDialog = true }
+        onClick = { showDialog = true },
     ) {
-        Icon(
-            painterResource(R.drawable.icon_trash),
-            contentDescription = "Löschen",
-            tint = Color.Red
-        )
-        Text(text = "Liste löschen", style = MaterialTheme.typography.bodyMedium)
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painterResource(R.drawable.icon_trash),
+                contentDescription = "Löschen",
+                tint = Color.Red,
+                modifier = Modifier
+                    .size(14.dp)
+            )
+            Text(text = "Liste löschen", style = MaterialTheme.typography.bodyMedium)
+        }
     }
 }
