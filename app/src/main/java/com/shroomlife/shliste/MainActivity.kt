@@ -18,9 +18,7 @@ import com.shroomlife.shliste.ui.theme.ShlisteTheme
 import com.shroomlife.shliste.modules.lists.screens.ListsCreateScreen
 import com.shroomlife.shliste.modules.lists.screens.ListsDetailScreen
 import com.shroomlife.shliste.modules.lists.screens.ListsOverviewScreen
-import com.shroomlife.shliste.modules.products.screens.ProductsOverviewScreen
 import com.shroomlife.shliste.modules.recipes.screens.RecipesOverviewScreen
-import com.shroomlife.shliste.modules.stores.screens.StoresOverviewScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +47,8 @@ fun ShlisteApp() {
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
     ) {
+
+        // Lists
         composable(Routes.LISTS) { ListsOverviewScreen() }
         composable(Routes.LIST_CREATE) { ListsCreateScreen() }
         composable(
@@ -85,8 +85,7 @@ fun ShlisteApp() {
             ListItemEditScreen(listItemId)
         }
 
+        // Recipes
         composable(Routes.RECIPES) { RecipesOverviewScreen() }
-        composable(Routes.PRODUCTS) { ProductsOverviewScreen() }
-        composable(Routes.STORES) { StoresOverviewScreen() }
     }
 }

@@ -137,7 +137,10 @@ fun ListItemEditScreen(listItemId: String) {
                     value = itemQuantity,
                     onValueChange = { newValue ->
                         if (newValue.all { it.isDigit() }) {
-                            itemQuantity = newValue
+                            val numeric = newValue.toIntOrNull() ?: 0
+                            if (numeric <= 999) { // 👈 Maximum-Grenze
+                                itemQuantity = newValue
+                            }
                         }
                     },
                     singleLine = true,

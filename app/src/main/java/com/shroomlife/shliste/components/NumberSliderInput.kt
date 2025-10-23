@@ -30,6 +30,7 @@ fun NumberSliderInput(
     value: Int,
     onValueChange: (Int) -> Unit
 ) {
+    val MAX_VALUE = 999
     val animatedOffset = remember { Animatable(0f) }
     val haptics = LocalHapticFeedback.current
     val currentValue by rememberUpdatedState(value)
@@ -45,16 +46,24 @@ fun NumberSliderInput(
                             launch {
                                 animatedOffset.snapTo(animatedOffset.value + dragAmount / 2)
 
-                                if (animatedOffset.value < -40) {
-                                    val newValue = currentValue + 1
-                                    onValueChange(newValue)
-                                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                    animatedOffset.snapTo(0f)
-                                } else if (animatedOffset.value > 40) {
-                                    val newValue = (currentValue - 1).coerceAtLeast(1)
-                                    onValueChange(newValue)
-                                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                    animatedOffset.snapTo(0f)
+                                when {
+                                    animatedOffset.value < -40 -> {
+                                        val newValue = (currentValue + 1).coerceAtMost(MAX_VALUE)
+                                        if (newValue != currentValue) {
+                                            onValueChange(newValue)
+                                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        }
+                                        animatedOffset.snapTo(0f)
+                                    }
+
+                                    animatedOffset.value > 40 -> {
+                                        val newValue = (currentValue - 1).coerceAtLeast(1)
+                                        if (newValue != currentValue) {
+                                            onValueChange(newValue)
+                                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        }
+                                        animatedOffset.snapTo(0f)
+                                    }
                                 }
                             }
                         },

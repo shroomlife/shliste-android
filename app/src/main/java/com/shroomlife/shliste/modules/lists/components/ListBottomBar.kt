@@ -71,7 +71,6 @@ fun ListBottomBar() {
             ) {
 
                 NumberSliderInput(
-                    modifier = Modifier.padding(end = 8.dp),
                     value = quantity,
                     onValueChange = { quantity = it }
                 )
@@ -94,7 +93,7 @@ fun ListBottomBar() {
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
                         .weight(1f)
-                        .padding(end = 8.dp)
+                        .padding(end = 6.dp)
                         .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp)),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
