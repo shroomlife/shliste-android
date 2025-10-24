@@ -20,8 +20,6 @@ import com.shroomlife.shliste.navigateTo
 fun AppBottomBar() {
 
     val iconSize = 32.dp
-    val paddingBottom = 24.dp
-    val paddingTop = 12.dp
 
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -46,7 +44,7 @@ fun AppBottomBar() {
                         .clickable {
                             navigateTo(navController, destination.route)
                         }
-                        .padding(bottom = paddingBottom, top = paddingTop),
+                        .padding(vertical = 12.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(

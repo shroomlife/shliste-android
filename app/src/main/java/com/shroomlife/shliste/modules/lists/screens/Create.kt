@@ -49,6 +49,7 @@ fun ListsCreateScreen() {
     }
 
     AppContainer(
+        bottomBar = {},
         disableScroll = true,
         beforePadding = {
             BackButton()
