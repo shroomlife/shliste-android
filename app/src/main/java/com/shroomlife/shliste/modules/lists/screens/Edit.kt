@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
-import com.shroomlife.shliste.components.AppContainer
+import com.shroomlife.shliste.AppContainer
 import com.shroomlife.shliste.components.BackButton
 import com.shroomlife.shliste.navigateTo
 import com.shroomlife.shliste.ui.theme.PrimaryColor
@@ -66,6 +66,7 @@ fun ListEditScreen(listId: String) {
     }
 
     AppContainer(
+        bottomBar = {},
         disableScroll = true,
         beforePadding = {
             BackButton(

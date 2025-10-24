@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
-import com.shroomlife.shliste.components.AppContainer
+import com.shroomlife.shliste.AppContainer
 import com.shroomlife.shliste.components.BackButton
 import com.shroomlife.shliste.navigateTo
 import com.shroomlife.shliste.ui.theme.PrimaryColor
@@ -64,7 +64,8 @@ fun ListsCreateScreen() {
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .imePadding(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
 
             ) {

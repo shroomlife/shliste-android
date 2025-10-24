@@ -3,6 +3,8 @@ package com.shroomlife.shliste.components
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
@@ -41,6 +43,17 @@ fun NumberSliderInput(
             .background(Color.White)
             .pointerInput(Unit) {
                 coroutineScope {
+                    // Kombinierte Gestenerkennung
+                    awaitPointerEventScope {
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            // Hier könnten wir auf PointerEventType.Press reagieren
+                        }
+                    }
+                }
+            }
+            .pointerInput(Unit) {
+                coroutineScope {
                     detectVerticalDragGestures(
                         onVerticalDrag = { _, dragAmount ->
                             launch {
@@ -74,6 +87,18 @@ fun NumberSliderInput(
                         }
                     )
                 }
+            }
+            // Zweiter Input-Block nur für Tap (sauber getrennt vom Drag)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = {
+                        val newValue = (currentValue + 1).coerceAtMost(MAX_VALUE)
+                        if (newValue != currentValue) {
+                            onValueChange(newValue)
+                            haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        }
+                    }
+                )
             },
         contentAlignment = Alignment.Center
     ) {

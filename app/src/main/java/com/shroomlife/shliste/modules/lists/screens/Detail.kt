@@ -18,7 +18,7 @@ import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
-import com.shroomlife.shliste.components.AppContainer
+import com.shroomlife.shliste.AppContainer
 import com.shroomlife.shliste.components.BackButton
 import com.shroomlife.shliste.modules.lists.components.DeleteListButton
 import com.shroomlife.shliste.modules.lists.components.ListBottomBar

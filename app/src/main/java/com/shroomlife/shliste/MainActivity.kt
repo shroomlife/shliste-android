@@ -48,7 +48,6 @@ fun ShlisteApp() {
         exitTransition = { ExitTransition.None },
     ) {
 
-        // Lists
         composable(Routes.LISTS) { ListsOverviewScreen() }
         composable(Routes.LIST_CREATE) { ListsCreateScreen() }
         composable(

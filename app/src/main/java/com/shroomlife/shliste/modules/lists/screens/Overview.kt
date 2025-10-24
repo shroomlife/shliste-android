@@ -11,7 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,7 +20,7 @@ import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.R
 import com.shroomlife.shliste.Routes
-import com.shroomlife.shliste.components.AppContainer
+import com.shroomlife.shliste.AppContainer
 import com.shroomlife.shliste.components.LightBadge
 import com.shroomlife.shliste.modules.lists.components.ListCard
 import com.shroomlife.shliste.navigateTo
@@ -34,9 +33,6 @@ fun ListsOverviewScreen() {
 
     val lists = listStore.lists.sortedByDescending {
         it.lastEditied
-    }
-
-    LaunchedEffect(Unit) {
     }
 
     AppContainer(

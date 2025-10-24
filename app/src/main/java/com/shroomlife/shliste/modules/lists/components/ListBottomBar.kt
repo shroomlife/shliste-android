@@ -55,13 +55,14 @@ fun ListBottomBar() {
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
-            .imePadding()
-            .padding(bottom = 24.dp),
+            .imePadding(),
         contentAlignment = Alignment.Center
     ) {
         Column() {
 
-            HorizontalDivider()
+            HorizontalDivider(
+                color = Color.LightGray
+            )
 
             Row(
                 modifier = Modifier
@@ -70,10 +71,6 @@ fun ListBottomBar() {
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                NumberSliderInput(
-                    value = quantity,
-                    onValueChange = { quantity = it }
-                )
 
                 TextField(
                     value = name,
@@ -93,7 +90,6 @@ fun ListBottomBar() {
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
                         .weight(1f)
-                        .padding(end = 6.dp)
                         .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp)),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
@@ -103,6 +99,11 @@ fun ListBottomBar() {
                             handleAddItem()
                         }
                     )
+                )
+
+                NumberSliderInput(
+                    value = quantity,
+                    onValueChange = { quantity = it }
                 )
 
                 Box(
