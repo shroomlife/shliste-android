@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -22,6 +23,8 @@ import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.AppContainer
+import com.shroomlife.shliste.LocalAppStore
+import com.shroomlife.shliste.R
 import com.shroomlife.shliste.components.BackButton
 import com.shroomlife.shliste.navigateTo
 import com.shroomlife.shliste.ui.theme.PrimaryColor
@@ -30,15 +33,17 @@ import com.shroomlife.shliste.ui.theme.ZainFontFamily
 @Composable
 fun ListsCreateScreen() {
 
+    val appStore = LocalAppStore.current
     val listStore = LocalListStore.current
     val navController = LocalNavController.current
     val context = LocalContext.current
 
     var name by remember { mutableStateOf("") }
+    var isSecret by remember { mutableStateOf<Boolean>(false) }
 
     fun handleAddList() {
         if(name.isNotBlank()) {
-            listStore.addList(name.trim())
+            listStore.addList(name.trim(), isSecret)
             navigateTo(navController, Routes.LISTS, Routes.LIST_CREATE)
             Toast.makeText(context, "✅ Liste Erstellt", Toast.LENGTH_SHORT).show()
         }
@@ -69,7 +74,41 @@ fun ListsCreateScreen() {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
 
             ) {
-                Text("Neue Liste", style = MaterialTheme.typography.displayLarge)
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("Neue Liste", style = MaterialTheme.typography.displayLarge)
+                    if(appStore.biometricAvailable == true) {
+                        Switch(
+                            checked = isSecret,
+                            onCheckedChange = {
+                                isSecret = it
+                            },
+                            thumbContent = if (isSecret) {
+                                {
+                                    Icon(
+                                        painterResource(R.drawable.icon_lock_private),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                    )
+                                }
+                            } else {
+                                {
+                                    Icon(
+                                        painterResource(R.drawable.icon_lock_public),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                    )
+                                }
+                            }
+                        )
+                    }
+                }
 
                 TextField(
                     value = name,

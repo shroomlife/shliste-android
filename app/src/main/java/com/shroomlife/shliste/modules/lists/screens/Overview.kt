@@ -71,6 +71,7 @@ fun ListsOverviewScreen() {
                         uuid = list.uuid,
                         name = list.name,
                         color = list.color,
+                        secret = list.secret,
                         onClick = { uuid ->
                             navigateTo(navController, Routes.listDetail(uuid))
                         }

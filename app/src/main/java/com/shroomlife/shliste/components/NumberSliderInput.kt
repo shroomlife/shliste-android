@@ -3,12 +3,12 @@ package com.shroomlife.shliste.components
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,7 @@ import com.shroomlife.shliste.ui.theme.PrimaryColor
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import com.shroomlife.shliste.R
 
 @Composable
 fun NumberSliderInput(
@@ -43,11 +45,9 @@ fun NumberSliderInput(
             .background(Color.White)
             .pointerInput(Unit) {
                 coroutineScope {
-                    // Kombinierte Gestenerkennung
                     awaitPointerEventScope {
                         while (true) {
-                            val event = awaitPointerEvent()
-                            // Hier könnten wir auf PointerEventType.Press reagieren
+                            awaitPointerEvent()
                         }
                     }
                 }
@@ -88,7 +88,6 @@ fun NumberSliderInput(
                     )
                 }
             }
-            // Zweiter Input-Block nur für Tap (sauber getrennt vom Drag)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onTap = {
@@ -102,12 +101,30 @@ fun NumberSliderInput(
             },
         contentAlignment = Alignment.Center
     ) {
+        Icon(
+            painter = painterResource(R.drawable.icon_chevron_up),
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = 0.dp)
+                .size(16.dp),
+            tint = Color.LightGray
+        )
         Text(
             text = "${value}x",
             color = PrimaryColor,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.offset { IntOffset(0, animatedOffset.value.roundToInt()) }
+        )
+        Icon(
+            painter = painterResource(R.drawable.icon_chevron_down),
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = 0.dp)
+                .size(16.dp),
+            tint = Color.LightGray
         )
     }
 }

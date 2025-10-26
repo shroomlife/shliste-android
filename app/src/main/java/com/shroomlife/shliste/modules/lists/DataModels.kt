@@ -15,6 +15,7 @@ data class Shliste(
     val uuid: String,
     val name: String,
     val color: String,
+    val secret: Boolean = false,
     val items: List<ListItem> = emptyList(),
     val lastEditied: Long = System.currentTimeMillis()
 )

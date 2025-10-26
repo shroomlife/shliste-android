@@ -2,6 +2,7 @@ package com.shroomlife.shliste.modules.lists.screens
 
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -14,17 +15,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.FragmentActivity
 import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.AppContainer
 import com.shroomlife.shliste.components.BackButton
+import com.shroomlife.shliste.components.BiometricLoadingScreen
 import com.shroomlife.shliste.modules.lists.components.DeleteListButton
 import com.shroomlife.shliste.modules.lists.components.ListBottomBar
 import com.shroomlife.shliste.modules.lists.components.ListCard
 import com.shroomlife.shliste.modules.lists.components.ListItem
 import com.shroomlife.shliste.navigateTo
+import com.shroomlife.shliste.utils.AppUtils
 
 @Composable
 fun ListsDetailScreen(listId: String) {
@@ -81,6 +85,7 @@ fun ListsDetailScreen(listId: String) {
                 uuid = list.uuid,
                 name = list.name,
                 color = list.color,
+                secret = list.secret,
                 onClickHeader = {
                     navigateTo(navController, Routes.listEdit(listId))
                 }

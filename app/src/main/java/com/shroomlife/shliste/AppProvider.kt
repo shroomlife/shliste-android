@@ -1,9 +1,12 @@
 package com.shroomlife.shliste
 
 import android.app.Application
+import androidx.activity.compose.LocalActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.platform.LocalContext
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -28,11 +31,13 @@ fun AppProvider(
     content: @Composable () -> Unit
 ) {
     val navController = rememberNavController()
-    val appStore: AppStoreViewModel = viewModel()
-
-
-    val context = androidx.compose.ui.platform.LocalContext.current
+    val context = LocalContext.current
+    val activity = context as FragmentActivity
     val application = context.applicationContext as Application
+
+    val appStore: AppStoreViewModel = viewModel(
+        factory = com.shroomlife.shliste.state.AppStoreFactory(application)
+    )
 
     val listStore: ListStore = viewModel(
         factory = ListStoreFactory(application)
@@ -41,7 +46,8 @@ fun AppProvider(
     CompositionLocalProvider(
         LocalNavController provides navController,
         LocalAppStore provides appStore,
-        LocalListStore provides listStore
+        LocalListStore provides listStore,
+        LocalActivity provides activity
     ) {
         content()
     }

@@ -3,7 +3,10 @@ package com.shroomlife.shliste.modules.lists
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import com.shroomlife.shliste.utils.ColorUtils
@@ -16,6 +19,7 @@ class ListStore(application: Application) : AndroidViewModel(application) {
     private val context = application.applicationContext
 
     private val _lists = mutableStateListOf<Shliste>()
+    private var authorizedListId by mutableStateOf<String?>(null)
     private val _currentListId = mutableStateListOf<String?>()
     val lists: List<Shliste> get() = _lists
 
@@ -23,14 +27,27 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         loadListsFromStorage(context)
     }
 
-    fun addList(name: String) {
+    fun isListAuthorized(listId: String): Boolean {
+        return authorizedListId == listId
+    }
+
+    fun setAuthorizedList(listId: String?) {
+        authorizedListId = listId
+    }
+
+    fun addList(name: String, isSecret: Boolean = false) {
+        val newListId = UUID.randomUUID().toString()
         _lists.add(
             Shliste(
-                uuid = UUID.randomUUID().toString(),
+                uuid = newListId,
                 name = name,
-                color = ColorUtils.getRandomColor()
+                color = ColorUtils.getRandomColor(),
+                secret = isSecret,
             )
         )
+        if(isSecret) {
+            setAuthorizedList(newListId)
+        }
         saveListsToStorage(context)
     }
 
@@ -41,6 +58,11 @@ class ListStore(application: Application) : AndroidViewModel(application) {
 
     fun getListById(id: String): Shliste? {
         return _lists.find { it.uuid == id }
+    }
+
+    fun getIsListSecret(listId: String): Boolean {
+        val list = getListById(listId) ?: throw Exception("List not found")
+        return list.secret
     }
 
     fun getListItemById(itemId: String): ListItem? {
@@ -101,6 +123,19 @@ class ListStore(application: Application) : AndroidViewModel(application) {
                 name = newName,
                 lastEditied = System.currentTimeMillis()
             )
+        }
+        saveListsToStorage(context)
+    }
+
+    fun updateListSecretState(listId: String, isSecret: Boolean) {
+        val listIndex = _lists.indexOfFirst { it.uuid == listId }
+        if (listIndex != -1) {
+            val current = _lists[listIndex]
+            _lists[listIndex] = current.copy(
+                secret = isSecret,
+                lastEditied = System.currentTimeMillis()
+            )
+            setAuthorizedList(listId)
         }
         saveListsToStorage(context)
     }

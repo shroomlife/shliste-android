@@ -4,16 +4,21 @@ import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -26,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -35,6 +41,8 @@ import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.AppContainer
+import com.shroomlife.shliste.LocalAppStore
+import com.shroomlife.shliste.R
 import com.shroomlife.shliste.components.BackButton
 import com.shroomlife.shliste.navigateTo
 import com.shroomlife.shliste.ui.theme.PrimaryColor
@@ -43,6 +51,7 @@ import com.shroomlife.shliste.ui.theme.ZainFontFamily
 @Composable
 fun ListEditScreen(listId: String) {
 
+    val appStore = LocalAppStore.current
     val listStore = LocalListStore.current
     val navController = LocalNavController.current
     val context = LocalContext.current
@@ -55,11 +64,13 @@ fun ListEditScreen(listId: String) {
         return
     }
 
-    var name by remember { mutableStateOf(list.name) }
+    var name by remember { mutableStateOf<String>(list.name) }
+    var isSecret by remember { mutableStateOf<Boolean>(list.secret) }
 
     fun handleSaveList() {
         if(name.isNotBlank()) {
             listStore.updateListName(listId, name.trim())
+            listStore.updateListSecretState(listId, isSecret)
             navigateTo(navController, Routes.listDetail(listId), Routes.listEdit(listId))
             Toast.makeText(context, "Gespeichert", Toast.LENGTH_SHORT).show()
         }
@@ -88,7 +99,39 @@ fun ListEditScreen(listId: String) {
                 verticalArrangement = Arrangement.spacedBy(16.dp),
 
                 ) {
-                Text("Bearbeite Liste", style = MaterialTheme.typography.displayLarge)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("Bearbeite Liste", style = MaterialTheme.typography.displayLarge)
+                    if(appStore.biometricAvailable == true) {
+                        Switch(
+                            checked = isSecret,
+                            onCheckedChange = {
+                                isSecret = it
+                            },
+                            thumbContent = if (isSecret) {
+                                {
+                                    Icon(
+                                        painterResource(R.drawable.icon_lock_private),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                    )
+                                }
+                            } else {
+                                {
+                                    Icon(
+                                        painterResource(R.drawable.icon_lock_public),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                    )
+                                }
+                            }
+                        )
+                    }
+                }
 
                 TextField(
                     value = name,
@@ -111,7 +154,6 @@ fun ListEditScreen(listId: String) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(64.dp)
-                        .padding(end = 8.dp)
                         .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp)),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done

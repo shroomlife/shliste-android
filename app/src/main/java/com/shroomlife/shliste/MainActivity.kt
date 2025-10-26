@@ -1,17 +1,20 @@
 package com.shroomlife.shliste
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.shroomlife.shliste.modules.lists.components.SecretListWrapper
 import com.shroomlife.shliste.modules.lists.screens.ListEditScreen
 import com.shroomlife.shliste.modules.lists.screens.ListItemEditScreen
 import com.shroomlife.shliste.ui.theme.ShlisteTheme
@@ -20,7 +23,7 @@ import com.shroomlife.shliste.modules.lists.screens.ListsDetailScreen
 import com.shroomlife.shliste.modules.lists.screens.ListsOverviewScreen
 import com.shroomlife.shliste.modules.recipes.screens.RecipesOverviewScreen
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -32,6 +35,15 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        val listStore = (this as? FragmentActivity)?.let {
+            androidx.lifecycle.ViewModelProvider(it)[com.shroomlife.shliste.modules.lists.ListStore::class.java]
+        }
+        listStore?.setAuthorizedList(null)
+    }
+
 }
 
 
@@ -39,7 +51,22 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ShlisteApp() {
 
+    val listStore = LocalListStore.current
     val navController = LocalNavController.current
+
+    LaunchedEffect(navController) {
+        navController.currentBackStackEntryFlow.collect { backStackEntry ->
+            val route = backStackEntry.destination.route
+            val allowedRoutes = listOf(
+                Routes.LIST_DETAIL,
+                Routes.LIST_EDIT,
+                Routes.LIST_ITEM_EDIT
+            )
+            if (route != null && !allowedRoutes.any { route.startsWith(it) }) {
+                listStore.setAuthorizedList(null)
+            }
+        }
+    }
 
     NavHost(
         navController = navController,
@@ -59,7 +86,9 @@ fun ShlisteApp() {
                 navigateTo(navController, Routes.LISTS)
                 return@composable
             }
-            ListsDetailScreen(listId = listId)
+            SecretListWrapper(listId = listId) {
+                ListsDetailScreen(listId = listId)
+            }
         }
         composable(
             route = Routes.LIST_EDIT,
@@ -70,7 +99,9 @@ fun ShlisteApp() {
                 navigateTo(navController, Routes.LISTS)
                 return@composable
             }
-            ListEditScreen(listId = listId)
+            SecretListWrapper(listId = listId) {
+                ListEditScreen(listId = listId)
+            }
         }
         composable(
             route = Routes.LIST_ITEM_EDIT,
@@ -81,7 +112,14 @@ fun ShlisteApp() {
                 navigateTo(navController, Routes.LISTS)
                 return@composable
             }
-            ListItemEditScreen(listItemId)
+            val listId = LocalListStore.current.getListIdByListItemId(listItemId)
+            if (listId === null) {
+                navigateTo(navController, Routes.LISTS)
+                return@composable
+            }
+            SecretListWrapper(listId) {
+                ListItemEditScreen(listItemId)
+            }
         }
 
         // Recipes
