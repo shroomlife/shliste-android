@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.shroomlife.shliste.ui.theme.DefaultLightGray
 
 @Composable
 fun DefaultCard(
@@ -40,7 +41,7 @@ fun DefaultCard(
                 .fillMaxWidth()
         },
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, Color(0xFFE5E7EB)),
+        border = BorderStroke(1.dp, DefaultLightGray),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
@@ -71,7 +72,9 @@ fun DefaultCard(
                 ) {
                     header()
                 }
-                HorizontalDivider()
+                HorizontalDivider(
+                    color = DefaultLightGray
+                )
             }
 
             Column(
@@ -81,7 +84,9 @@ fun DefaultCard(
             }
 
             if (footer != null) {
-                HorizontalDivider()
+                HorizontalDivider(
+                    color = DefaultLightGray
+                )
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()

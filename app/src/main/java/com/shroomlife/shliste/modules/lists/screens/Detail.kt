@@ -1,8 +1,6 @@
 package com.shroomlife.shliste.modules.lists.screens
 
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -15,20 +13,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.FragmentActivity
 import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.AppContainer
 import com.shroomlife.shliste.components.BackButton
-import com.shroomlife.shliste.components.BiometricLoadingScreen
 import com.shroomlife.shliste.modules.lists.components.DeleteListButton
 import com.shroomlife.shliste.modules.lists.components.ListBottomBar
 import com.shroomlife.shliste.modules.lists.components.ListCard
 import com.shroomlife.shliste.modules.lists.components.ListItem
 import com.shroomlife.shliste.navigateTo
-import com.shroomlife.shliste.utils.AppUtils
 
 @Composable
 fun ListsDetailScreen(listId: String) {
@@ -40,29 +35,31 @@ fun ListsDetailScreen(listId: String) {
 
     val isDeleted = remember { mutableStateOf<Boolean>(false) }
 
-    listStore.setCurrentListId(listId)
-    val list = listStore.getCurrentList()
+    val list = listStore.lists.firstOrNull { it.uuid == listId }
+    if (!listStore.isLoading && list == null) {
+        LaunchedEffect(Unit) {
+            Toast.makeText(context, "Liste nicht gefunden", Toast.LENGTH_SHORT).show()
+            navigateTo(navController, Routes.LISTS)
+        }
+        return
+    }
+
     if(list == null) {
-        Log.d("ListsDetailScreen", "isDeleted: $isDeleted")
-        if(isDeleted.value == true) return
-        Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show()
-        navigateTo(navController, Routes.LISTS, Routes.listDetail(listId))
         return
     }
 
     val itemCount = list.items.size
-
     var previousCount by remember { mutableStateOf(itemCount) }
     var initialized by remember { mutableStateOf(false) }
 
     LaunchedEffect(itemCount) {
+        val state = appStore.scrollState ?: return@LaunchedEffect
         if (!initialized) {
             initialized = true
             previousCount = itemCount
             return@LaunchedEffect
         }
         if (itemCount > previousCount) {
-            val state = appStore.scrollState ?: return@LaunchedEffect
             state.animateScrollTo(state.maxValue)
         }
         previousCount = itemCount
@@ -75,7 +72,7 @@ fun ListsDetailScreen(listId: String) {
             )
         },
         bottomBar = {
-            ListBottomBar()
+            ListBottomBar(listId)
         }
     ) {
         Column(
@@ -100,7 +97,10 @@ fun ListsDetailScreen(listId: String) {
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         for(item in list.items) {
-                            ListItem(item = item)
+                            ListItem(
+                                listId = listId,
+                                item = item,
+                            )
                         }
                     }
                 }

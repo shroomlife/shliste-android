@@ -1,30 +1,61 @@
 package com.shroomlife.shliste.modules.lists
 
 import android.app.Application
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.shroomlife.shliste.modules.recipes.Recipe
 import com.shroomlife.shliste.utils.ColorUtils
-import java.io.File
+import com.shroomlife.shliste.utils.DataUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 import kotlin.collections.plus
-import kotlinx.serialization.json.*
 
 class ListStore(application: Application) : AndroidViewModel(application) {
-    private val context = application.applicationContext
 
+    private val _isLoading = mutableStateOf(true)
     private val _lists = mutableStateListOf<Shliste>()
     private var authorizedListId by mutableStateOf<String?>(null)
-    private val _currentListId = mutableStateListOf<String?>()
+    private val storeFileName = "lists.json"
+
     val lists: List<Shliste> get() = _lists
+    val hasAuthorizedList: Boolean get() = authorizedListId != null
+    val isLoading: Boolean get() = _isLoading.value
 
     init {
-        loadListsFromStorage(context)
+        viewModelScope.launch(Dispatchers.IO) {
+            loadLists()
+        }
+    }
+
+    private suspend fun loadLists() {
+        Log.d("ListStore", "Loading Lists ...")
+        withContext(Dispatchers.Main) {
+            _isLoading.value = true
+        }
+
+        val loadedLists: List<Shliste> =
+            DataUtils.loadFromStorage<List<Shliste>>(getApplication(), storeFileName)
+                ?: emptyList()
+
+        withContext(Dispatchers.Main) {
+            _lists.clear()
+            _lists.addAll(loadedLists)
+            _isLoading.value = false
+            Log.d("ListStore", "Loaded ${_lists.size} Lists")
+        }
+    }
+
+    private fun saveListsToStorage() {
+        viewModelScope.launch(Dispatchers.IO) {
+            DataUtils.saveToStorage(getApplication(), _lists.toList(), storeFileName)
+        }
     }
 
     fun isListAuthorized(listId: String): Boolean {
@@ -45,15 +76,13 @@ class ListStore(application: Application) : AndroidViewModel(application) {
                 secret = isSecret,
             )
         )
-        if(isSecret) {
-            setAuthorizedList(newListId)
-        }
-        saveListsToStorage(context)
+        if (isSecret) setAuthorizedList(newListId)
+        saveListsToStorage()
     }
 
     fun removeList(id: String) {
         _lists.removeAll { it.uuid == id }
-        saveListsToStorage(context)
+        saveListsToStorage()
     }
 
     fun getListById(id: String): Shliste? {
@@ -87,32 +116,19 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         return null
     }
 
-    fun getCurrentList(): Shliste? {
-        val currentListId = _currentListId.firstOrNull() ?: return null
-        return getListById(currentListId)
+    fun checkListItem(listId: String, itemUuid: String) {
+        checkItemInList(listId, itemUuid, true)
+        saveListsToStorage()
     }
 
-    fun checkListItem(itemUuid: String) {
-        val currentListId = _currentListId.firstOrNull() ?: return
-        checkItemInList(currentListId, itemUuid, true)
-        saveListsToStorage(context)
+    fun uncheckListItem(listId: String, itemUuid: String) {
+        checkItemInList(listId, itemUuid, false)
+        saveListsToStorage()
     }
 
-    fun uncheckListItem(itemUuid: String) {
-        val currentListId = _currentListId.firstOrNull() ?: return
-        checkItemInList(currentListId, itemUuid, false)
-        saveListsToStorage(context)
-    }
-
-    fun removeListItem(itemUuid: String) {
-        val currentListId = _currentListId.firstOrNull() ?: return
-        removeItemFromList(currentListId, itemUuid)
-        saveListsToStorage(context)
-    }
-
-    fun addItemToCurrentList(name: String, quantity: Int = 1) {
-        val currentListId = _currentListId.firstOrNull() ?: return
-        addItemToList(currentListId, name, quantity)
+    fun removeListItem(listId: String, itemUuid: String) {
+        removeItemFromList(listId, itemUuid)
+        saveListsToStorage()
     }
 
     fun updateListName(listId: String, newName: String) {
@@ -124,7 +140,7 @@ class ListStore(application: Application) : AndroidViewModel(application) {
                 lastEditied = System.currentTimeMillis()
             )
         }
-        saveListsToStorage(context)
+        saveListsToStorage()
     }
 
     fun updateListSecretState(listId: String, isSecret: Boolean) {
@@ -137,7 +153,7 @@ class ListStore(application: Application) : AndroidViewModel(application) {
             )
             setAuthorizedList(listId)
         }
-        saveListsToStorage(context)
+        saveListsToStorage()
     }
 
     fun updateListItemName(listItemId: String, newName: String): String {
@@ -158,7 +174,7 @@ class ListStore(application: Application) : AndroidViewModel(application) {
                 items = updatedItems,
                 lastEditied = System.currentTimeMillis()
             )
-            saveListsToStorage(context)
+            saveListsToStorage()
             return currentList.uuid
         }
         return ""
@@ -182,15 +198,10 @@ class ListStore(application: Application) : AndroidViewModel(application) {
                 items = updatedItems,
                 lastEditied = System.currentTimeMillis()
             )
-            saveListsToStorage(context)
+            saveListsToStorage()
             return currentList.uuid
         }
         return ""
-    }
-
-    fun setCurrentListId(id: String) {
-        _currentListId.clear()
-        _currentListId.add(id)
     }
 
     fun addItemToList(listId: String, name: String, quantity: Int = 1) {
@@ -207,7 +218,7 @@ class ListStore(application: Application) : AndroidViewModel(application) {
                 lastEditied = System.currentTimeMillis()
             )
         }
-        saveListsToStorage(context)
+        saveListsToStorage()
     }
 
     fun checkItemInList(listId: String, itemId: String, checked: Boolean) {
@@ -222,7 +233,7 @@ class ListStore(application: Application) : AndroidViewModel(application) {
                 lastEditied = System.currentTimeMillis()
             )
         }
-        saveListsToStorage(context)
+        saveListsToStorage()
     }
 
     fun removeItemFromList(listId: String, itemId: String) {
@@ -235,36 +246,7 @@ class ListStore(application: Application) : AndroidViewModel(application) {
                 lastEditied = System.currentTimeMillis()
             )
         }
-        saveListsToStorage(context)
+        saveListsToStorage()
     }
 
-    fun loadListsFromStorage(context: Context) {
-        try {
-            val file = getStorageFile(context)
-            if (file.exists()) {
-                val json = file.readText()
-                val loadedLists = Json.decodeFromString<List<Shliste>>(json)
-                _lists.clear()
-                _lists.addAll(loadedLists)
-            }
-            Log.d("ListStore", "Lists loaded from storage.")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    fun saveListsToStorage(context: Context) {
-        try {
-            val json = Json.encodeToString(_lists.toList())
-            val file = getStorageFile(context)
-            file.writeText(json)
-            Log.d("ListStore", "Lists saved to storage.")
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-}
-
-private fun getStorageFile(context: Context): File {
-    return File(context.filesDir, "lists.json")
 }

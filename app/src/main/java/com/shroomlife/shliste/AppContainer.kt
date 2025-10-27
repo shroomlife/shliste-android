@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.shroomlife.shliste.components.AppBottomBar
 import com.shroomlife.shliste.components.AppHeader
+import com.shroomlife.shliste.components.DefaultLoader
 
 @Composable
 fun AppContainer(
@@ -32,7 +33,8 @@ fun AppContainer(
     bottomBar: @Composable (() -> Unit)? = null,
     scrollState: ScrollState = rememberScrollState(),
     disableScroll: Boolean = false,
-    content: @Composable () -> Unit
+    isLoading: Boolean = false,
+    content: @Composable () -> Unit,
 ) {
 
     val appStore = LocalAppStore.current
@@ -76,29 +78,28 @@ fun AppContainer(
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
         ) {
-            beforePadding?.invoke()
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-                    .then(
-                        if(disableScroll) {
-                            Modifier
-                        } else {
-                            Modifier
-                                .verticalScroll(scrollState)
-                        }
-                    )
-                    .padding(16.dp)
-            ) {
-                content.invoke()
+            if(isLoading) {
+                DefaultLoader()
+            } else {
+                beforePadding?.invoke()
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White)
+                        .then(
+                            if (disableScroll) {
+                                Modifier
+                            } else {
+                                Modifier
+                                    .verticalScroll(scrollState)
+                            }
+                        )
+                        .padding(16.dp)
+                ) {
+                    content.invoke()
+                }
+                afterPadding?.invoke()
             }
-            afterPadding?.invoke()
         }
     }
-
-
-
-
-
 }

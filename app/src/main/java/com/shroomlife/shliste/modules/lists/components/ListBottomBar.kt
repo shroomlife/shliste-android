@@ -34,10 +34,11 @@ import androidx.compose.ui.unit.sp
 import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.R
 import com.shroomlife.shliste.components.NumberSliderInput
+import com.shroomlife.shliste.ui.theme.DefaultLightGray
 import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
-fun ListBottomBar() {
+fun ListBottomBar(listId: String) {
 
     val listStore = LocalListStore.current
     var name by remember { mutableStateOf<String>("") }
@@ -45,7 +46,7 @@ fun ListBottomBar() {
 
     fun handleAddItem() {
         if(name.isNotBlank()) {
-            listStore.addItemToCurrentList(name.trim(), quantity)
+            listStore.addItemToList(listId, name.trim(), quantity)
             name = ""
             quantity = 1
         }
@@ -61,7 +62,7 @@ fun ListBottomBar() {
         Column() {
 
             HorizontalDivider(
-                color = Color.LightGray
+                color = DefaultLightGray
             )
 
             Row(

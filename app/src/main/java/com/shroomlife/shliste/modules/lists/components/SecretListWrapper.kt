@@ -24,57 +24,40 @@ fun SecretListWrapper(
     val appStore = LocalAppStore.current
     val listStore = LocalListStore.current
     val navController = LocalNavController.current
+    val activity = context as? FragmentActivity
 
-    var isListSecret: Boolean = false
-
-    try {
-        isListSecret = listStore.getIsListSecret(listId)
-    } catch (e: Exception) {
-        Toast.makeText(context, "Fehler beim Laden der Liste", Toast.LENGTH_SHORT).show()
-        navigateTo(navController, Routes.LISTS)
-        return
-    }
-
-    if (!isListSecret) {
-        content()
-        return
-    }
-
+    val isSecret = remember { listStore.getIsListSecret(listId) }
     var authorized by remember { mutableStateOf(listStore.isListAuthorized(listId)) }
 
-    if (!authorized) {
-        LaunchedEffect(Unit) {
+    LaunchedEffect(isSecret, authorized) {
+        if (isSecret && !authorized) {
+            if (activity == null) {
+                Toast.makeText(context, "Keine Activity gefunden", Toast.LENGTH_SHORT).show()
+                navigateTo(navController, Routes.LISTS)
+                return@LaunchedEffect
+            }
             if (appStore.isBiometricAvailable()) {
-                val activity = context as? FragmentActivity
-                if (activity != null) {
-                    AppUtils.authenticateWithBiometrics(
-                        activity,
-                        onSuccess = {
-                            listStore.setAuthorizedList(listId)
-                            authorized = true
-                        },
-                        onError = {
-                            Toast.makeText(
-                                context,
-                                "Fehlende Authentifizierung",
-                                Toast.LENGTH_SHORT)
-                            .show()
-                            navigateTo(navController, Routes.LISTS)
-                        }
-                    )
-                } else {
-                    Toast.makeText(context, "Keine Activity gefunden", Toast.LENGTH_SHORT).show()
-                    navigateTo(navController, Routes.LISTS)
-                }
+                AppUtils.authenticateWithBiometrics(
+                    activity,
+                    onSuccess = {
+                        listStore.setAuthorizedList(listId)
+                        authorized = true
+                    },
+                    onError = {
+                        Toast.makeText(context, "Fehlende Authentifizierung", Toast.LENGTH_SHORT).show()
+                        navigateTo(navController, Routes.LISTS)
+                    }
+                )
             } else {
                 Toast.makeText(context, "Biometrische Authentifizierung nicht verfügbar", Toast.LENGTH_SHORT).show()
                 navigateTo(navController, Routes.LISTS)
             }
         }
-
-        BiometricLoadingScreen()
-        return
     }
 
-    content()
+    if (!isSecret || authorized) {
+        content()
+    } else {
+        BiometricLoadingScreen()
+    }
 }

@@ -84,7 +84,8 @@ fun ListItemEditScreen(listItemId: String) {
                 to = Routes.listDetail(listId),
                 caption = "Zurück zur Liste"
             )
-        }
+        },
+        isLoading = listStore.isLoading
     ) {
         Column(
             modifier = Modifier

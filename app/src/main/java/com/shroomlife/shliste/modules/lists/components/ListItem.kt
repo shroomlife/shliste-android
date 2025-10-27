@@ -35,6 +35,7 @@ import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
 fun ListItem(
+    listId: String,
     item: ListItem
 ) {
     val listStore = LocalListStore.current
@@ -117,7 +118,7 @@ fun ListItem(
                             .background(
                                 color = Color(0xFFfff7ed)
                             )
-                            .clickable { listStore.uncheckListItem(item.uuid) }
+                            .clickable { listStore.uncheckListItem(listId, item.uuid) }
                             .padding(14.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -135,7 +136,7 @@ fun ListItem(
                                 color = Color(0xFFfdecf5),
                                 shape = RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp)
                             )
-                            .clickable { listStore.removeListItem(item.uuid) }
+                            .clickable { listStore.removeListItem(listId, item.uuid) }
                             .padding(14.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -155,7 +156,7 @@ fun ListItem(
                             color = Color(0xFFeffaf5),
                             shape = RoundedCornerShape(topEnd = 8.dp, bottomEnd = 8.dp)
                         )
-                        .clickable { listStore.checkListItem(item.uuid) }
+                        .clickable { listStore.checkListItem(listId, item.uuid) }
                         .padding(14.dp),
                     contentAlignment = Alignment.Center
                 ) {

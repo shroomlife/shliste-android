@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.R
 import com.shroomlife.shliste.navigateTo
+import com.shroomlife.shliste.ui.theme.DefaultLightGray
 
 @Composable
 fun BackButton(
@@ -56,7 +57,8 @@ fun BackButton(
             )
             Text(text = caption)
         }
-
-        HorizontalDivider()
+        HorizontalDivider(
+            color = DefaultLightGray
+        )
     }
 }

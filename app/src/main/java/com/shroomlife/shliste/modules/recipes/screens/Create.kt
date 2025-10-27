@@ -1,5 +1,6 @@
-package com.shroomlife.shliste.modules.lists.screens
+package com.shroomlife.shliste.modules.recipes.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,7 @@ import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.AppContainer
 import com.shroomlife.shliste.LocalAppStore
+import com.shroomlife.shliste.LocalRecipeStore
 import com.shroomlife.shliste.R
 import com.shroomlife.shliste.components.BackButton
 import com.shroomlife.shliste.navigateTo
@@ -31,21 +33,19 @@ import com.shroomlife.shliste.ui.theme.PrimaryColor
 import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
-fun ListsCreateScreen() {
+fun RecipesCreateScreen() {
 
-    val appStore = LocalAppStore.current
-    val listStore = LocalListStore.current
+    val recipeStore = LocalRecipeStore.current
     val navController = LocalNavController.current
     val context = LocalContext.current
 
     var name by remember { mutableStateOf("") }
-    var isSecret by remember { mutableStateOf<Boolean>(false) }
 
-    fun handleAddList() {
+    fun handleAddRecipe() {
         if(name.isNotBlank()) {
-            listStore.addList(name.trim(), isSecret)
-            navigateTo(navController, Routes.LISTS, Routes.LIST_CREATE)
-            Toast.makeText(context, "✅ Liste Erstellt", Toast.LENGTH_SHORT).show()
+            val recipeId: String = recipeStore.addRecipe(name.trim())
+            navigateTo(navController, Routes.recipeDetail(recipeId))
+            Toast.makeText(context, "✅ Rezept Erstellt", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -58,8 +58,7 @@ fun ListsCreateScreen() {
         disableScroll = true,
         beforePadding = {
             BackButton()
-        },
-        isLoading = listStore.isLoading
+        }
     ) {
         Column(
             modifier = Modifier
@@ -83,39 +82,14 @@ fun ListsCreateScreen() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text("Neue Liste", style = MaterialTheme.typography.displayLarge)
-                    if(appStore.biometricAvailable == true) {
-                        Switch(
-                            checked = isSecret,
-                            onCheckedChange = {
-                                isSecret = it
-                            },
-                            thumbContent = if (isSecret) {
-                                {
-                                    Icon(
-                                        painterResource(R.drawable.icon_lock_private),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(SwitchDefaults.IconSize),
-                                    )
-                                }
-                            } else {
-                                {
-                                    Icon(
-                                        painterResource(R.drawable.icon_lock_public),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(SwitchDefaults.IconSize),
-                                    )
-                                }
-                            }
-                        )
-                    }
+                    Text("Neues Rezept", style = MaterialTheme.typography.displayLarge)
                 }
 
                 TextField(
                     value = name,
                     onValueChange = { name = it },
                     singleLine = true,
-                    label = { Text("Name der Liste", fontFamily = ZainFontFamily, fontSize = 14.sp) },
+                    label = { Text("Name des Rezepts", fontFamily = ZainFontFamily, fontSize = 14.sp) },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.White,
                         focusedIndicatorColor = Color.Transparent,
@@ -139,14 +113,14 @@ fun ListsCreateScreen() {
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {
-                            handleAddList()
+                            handleAddRecipe()
                         }
                     )
                 )
 
                 Button(
                     onClick = {
-                        handleAddList()
+                        handleAddRecipe()
                     },
                     modifier = Modifier
                         .fillMaxWidth(),
