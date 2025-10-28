@@ -40,16 +40,26 @@ fun RecipesDetailScreen(recipeId: String) {
 
     val isDeleted = remember { mutableStateOf<Boolean>(false) }
 
-    recipeStore.setcurrentRecipeId(recipeId)
-    val recipe = recipeStore.getCurrentRecipe()
-    if(recipe == null) {
-        if(isDeleted.value == true) return
-        Toast.makeText(context, "Not Found", Toast.LENGTH_SHORT).show()
-        navigateTo(navController, Routes.RECIPES, Routes.recipeDetail(recipeId))
+    val recipe = recipeStore.recipes.firstOrNull { it.uuid == recipeId }
+    if (!recipeStore.isLoading && recipe == null && isDeleted.value == false) {
+        LaunchedEffect(Unit) {
+            Toast.makeText(context, "Liste nicht gefunden", Toast.LENGTH_SHORT).show()
+            navigateTo(navController, Routes.LISTS)
+        }
         return
     }
 
-    AppContainer() {
+    if(recipe == null) {
+        return
+    }
+
+    AppContainer(
+        beforePadding = {
+            BackButton(
+                to = Routes.RECIPES
+            )
+        }
+    ) {
         Text("Hallo ${recipe.name}!")
     }
 

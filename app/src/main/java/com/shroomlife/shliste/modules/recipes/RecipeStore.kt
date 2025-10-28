@@ -22,6 +22,7 @@ class RecipeStore(application: Application) : AndroidViewModel(application) {
     private val storeFileName = "recipes.json"
 
     val recipes: List<Recipe> get() = _recipes
+    val isLoading: Boolean get() = _isLoading.value
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

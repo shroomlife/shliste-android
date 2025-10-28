@@ -40,13 +40,13 @@ fun BackButton(
                     if (to != null) {
                         val popped = navController.popBackStack(to, inclusive = false)
                         if (!popped) {
-                            navigateTo(navController, to)
+                            navigateTo(navController, to, to)
                         }
                     } else {
                         navController.popBackStack()
                     }
                 }
-                .padding(16.dp),
+                .padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

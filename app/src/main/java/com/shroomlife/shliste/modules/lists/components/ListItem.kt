@@ -36,7 +36,8 @@ import com.shroomlife.shliste.ui.theme.ZainFontFamily
 @Composable
 fun ListItem(
     listId: String,
-    item: ListItem
+    item: ListItem,
+    onClick: (() -> Unit)? = null
 ) {
     val listStore = LocalListStore.current
     val navController = LocalNavController.current
@@ -66,7 +67,7 @@ fun ListItem(
                             },
                             shape = RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp)
                         )
-                        .padding(14.dp),
+                        .padding(12.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -87,6 +88,10 @@ fun ListItem(
                 modifier = Modifier
                     .weight(1f)
                     .clickable {
+                        if(onClick != null) {
+                            onClick()
+                            return@clickable
+                        }
                         navigateTo(
                             navController,
                             Routes.listItemEdit(item.uuid)

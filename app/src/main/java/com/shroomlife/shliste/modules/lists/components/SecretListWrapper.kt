@@ -27,30 +27,29 @@ fun SecretListWrapper(
     val activity = context as? FragmentActivity
 
     val isSecret = remember { listStore.getIsListSecret(listId) }
-    var authorized by remember { mutableStateOf(listStore.isListAuthorized(listId)) }
+    var authorized by remember { mutableStateOf(false) }
 
     LaunchedEffect(isSecret, authorized) {
         if (isSecret && !authorized) {
             if (activity == null) {
                 Toast.makeText(context, "Keine Activity gefunden", Toast.LENGTH_SHORT).show()
-                navigateTo(navController, Routes.LISTS)
+                navigateTo(navController, Routes.LISTS, Routes.LISTS)
                 return@LaunchedEffect
             }
             if (appStore.isBiometricAvailable()) {
                 AppUtils.authenticateWithBiometrics(
                     activity,
                     onSuccess = {
-                        listStore.setAuthorizedList(listId)
                         authorized = true
                     },
                     onError = {
                         Toast.makeText(context, "Fehlende Authentifizierung", Toast.LENGTH_SHORT).show()
-                        navigateTo(navController, Routes.LISTS)
+                        navigateTo(navController, Routes.LISTS, Routes.LISTS)
                     }
                 )
             } else {
                 Toast.makeText(context, "Biometrische Authentifizierung nicht verfügbar", Toast.LENGTH_SHORT).show()
-                navigateTo(navController, Routes.LISTS)
+                navigateTo(navController, Routes.LISTS, Routes.LISTS)
             }
         }
     }

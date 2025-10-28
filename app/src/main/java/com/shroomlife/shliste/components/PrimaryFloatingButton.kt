@@ -17,15 +17,21 @@ import com.shroomlife.shliste.ui.theme.PrimaryColor
 
 @Composable
 fun PrimaryFloatingButton(
-    to: String,
+    to: String? = null,
     caption: String,
-    icon: Int = R.drawable.icon_plus
+    icon: Int = R.drawable.icon_plus,
+    onClick: (() -> Unit)? = null
 ) {
 
     val navController = LocalNavController.current
 
     ExtendedFloatingActionButton(
         onClick = {
+            if(onClick != null) {
+                onClick()
+                return@ExtendedFloatingActionButton
+            }
+            if(to == null) return@ExtendedFloatingActionButton
             navigateTo(navController, to)
         },
         containerColor = PrimaryColor,

@@ -3,12 +3,16 @@ package com.shroomlife.shliste.modules.lists.screens
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -19,12 +23,18 @@ import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.AppContainer
 import com.shroomlife.shliste.components.BackButton
+import com.shroomlife.shliste.modules.lists.ListItem
+import com.shroomlife.shliste.modules.lists.Shliste
 import com.shroomlife.shliste.modules.lists.components.DeleteListButton
 import com.shroomlife.shliste.modules.lists.components.ListBottomBar
 import com.shroomlife.shliste.modules.lists.components.ListCard
+import com.shroomlife.shliste.modules.lists.components.ListEditSheet
 import com.shroomlife.shliste.modules.lists.components.ListItem
+import com.shroomlife.shliste.modules.lists.components.ListItemEditSheet
 import com.shroomlife.shliste.navigateTo
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListsDetailScreen(listId: String) {
 
@@ -35,8 +45,50 @@ fun ListsDetailScreen(listId: String) {
 
     val isDeleted = remember { mutableStateOf<Boolean>(false) }
 
+    val scope = rememberCoroutineScope()
+
+    var editingItem by remember { mutableStateOf<ListItem?>(null) }
+    val listItemEditSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    if (editingItem != null) {
+        ModalBottomSheet(
+            onDismissRequest = { editingItem = null },
+            sheetState = listItemEditSheetState
+        ) {
+            ListItemEditSheet(
+                listItemId = editingItem!!.uuid,
+                onSaved = {
+                    scope.launch {
+                        listItemEditSheetState.hide()
+                        listItemEditSheetState.currentValue
+                        editingItem = null
+                    }
+                }
+            )
+        }
+    }
+
+    var editingList by remember { mutableStateOf<Shliste?>(null) }
+    val listEditSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    if (editingList != null) {
+        ModalBottomSheet(
+            onDismissRequest = { editingList = null },
+            sheetState = listEditSheetState
+        ) {
+            ListEditSheet(
+                listId = editingList!!.uuid,
+                onSaved = {
+                    scope.launch {
+                        listEditSheetState.hide()
+                        listEditSheetState.currentValue
+                        editingList = null
+                    }
+                }
+            )
+        }
+    }
+
     val list = listStore.lists.firstOrNull { it.uuid == listId }
-    if (!listStore.isLoading && list == null) {
+    if (!listStore.isLoading && list == null && isDeleted.value == false) {
         LaunchedEffect(Unit) {
             Toast.makeText(context, "Liste nicht gefunden", Toast.LENGTH_SHORT).show()
             navigateTo(navController, Routes.LISTS)
@@ -79,12 +131,9 @@ fun ListsDetailScreen(listId: String) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             ListCard(
-                uuid = list.uuid,
-                name = list.name,
-                color = list.color,
-                secret = list.secret,
+                list = list,
                 onClickHeader = {
-                    navigateTo(navController, Routes.listEdit(listId))
+                    editingList = list
                 }
             ) {
                 if(list.items.isEmpty()) {
@@ -100,6 +149,7 @@ fun ListsDetailScreen(listId: String) {
                             ListItem(
                                 listId = listId,
                                 item = item,
+                                onClick = { editingItem = item } // 👈 open sheet
                             )
                         }
                     }

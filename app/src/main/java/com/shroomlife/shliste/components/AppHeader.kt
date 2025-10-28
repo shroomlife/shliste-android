@@ -13,14 +13,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.shroomlife.shliste.AppDestinations
 import com.shroomlife.shliste.R
+import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.navigateTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppHeader(
-    navController: androidx.navigation.NavHostController
+    navController: NavHostController
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
@@ -31,7 +33,7 @@ fun AppHeader(
         ),
         modifier = Modifier
             .clickable {
-                navigateTo(navController, AppDestinations.LISTS.route)
+                navigateTo(navController, Routes.LISTS, Routes.LISTS)
             }
             .background(
                 brush = Brush.verticalGradient(

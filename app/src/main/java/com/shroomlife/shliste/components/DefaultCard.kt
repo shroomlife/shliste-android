@@ -40,7 +40,7 @@ fun DefaultCard(
             Modifier
                 .fillMaxWidth()
         },
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         border = BorderStroke(1.dp, DefaultLightGray),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)

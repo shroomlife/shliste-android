@@ -25,36 +25,11 @@ class ListStore(application: Application) : AndroidViewModel(application) {
     private val storeFileName = "lists.json"
 
     val lists: List<Shliste> get() = _lists
-    val hasAuthorizedList: Boolean get() = authorizedListId != null
     val isLoading: Boolean get() = _isLoading.value
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             loadLists()
-        }
-    }
-
-    private suspend fun loadLists() {
-        Log.d("ListStore", "Loading Lists ...")
-        withContext(Dispatchers.Main) {
-            _isLoading.value = true
-        }
-
-        val loadedLists: List<Shliste> =
-            DataUtils.loadFromStorage<List<Shliste>>(getApplication(), storeFileName)
-                ?: emptyList()
-
-        withContext(Dispatchers.Main) {
-            _lists.clear()
-            _lists.addAll(loadedLists)
-            _isLoading.value = false
-            Log.d("ListStore", "Loaded ${_lists.size} Lists")
-        }
-    }
-
-    private fun saveListsToStorage() {
-        viewModelScope.launch(Dispatchers.IO) {
-            DataUtils.saveToStorage(getApplication(), _lists.toList(), storeFileName)
         }
     }
 
@@ -66,7 +41,7 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         authorizedListId = listId
     }
 
-    fun addList(name: String, isSecret: Boolean = false) {
+    fun addList(name: String, isSecret: Boolean = false): String {
         val newListId = UUID.randomUUID().toString()
         _lists.add(
             Shliste(
@@ -78,6 +53,7 @@ class ListStore(application: Application) : AndroidViewModel(application) {
         )
         if (isSecret) setAuthorizedList(newListId)
         saveListsToStorage()
+        return newListId
     }
 
     fun removeList(id: String) {
@@ -247,6 +223,30 @@ class ListStore(application: Application) : AndroidViewModel(application) {
             )
         }
         saveListsToStorage()
+    }
+
+    private suspend fun loadLists() {
+        Log.d("ListStore", "Loading Lists ...")
+        withContext(Dispatchers.Main) {
+            _isLoading.value = true
+        }
+
+        val loadedLists: List<Shliste> =
+            DataUtils.loadFromStorage<List<Shliste>>(getApplication(), storeFileName)
+                ?: emptyList()
+
+        withContext(Dispatchers.Main) {
+            _lists.clear()
+            _lists.addAll(loadedLists)
+            _isLoading.value = false
+            Log.d("ListStore", "Loaded ${_lists.size} Lists")
+        }
+    }
+
+    private fun saveListsToStorage() {
+        viewModelScope.launch(Dispatchers.IO) {
+            DataUtils.saveToStorage(getApplication(), _lists.toList(), storeFileName)
+        }
     }
 
 }

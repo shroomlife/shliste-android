@@ -33,6 +33,7 @@ fun AppContainer(
     bottomBar: @Composable (() -> Unit)? = null,
     scrollState: ScrollState = rememberScrollState(),
     disableScroll: Boolean = false,
+    disablePadding: Boolean = false,
     isLoading: Boolean = false,
     content: @Composable () -> Unit,
 ) {
@@ -94,7 +95,7 @@ fun AppContainer(
                                     .verticalScroll(scrollState)
                             }
                         )
-                        .padding(16.dp)
+                        .padding(if (disablePadding) 0.dp else 12.dp),
                 ) {
                     content.invoke()
                 }
