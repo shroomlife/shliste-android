@@ -3,6 +3,7 @@ package com.shroomlife.shliste.modules.lists.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,8 +31,6 @@ import com.shroomlife.shliste.R
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.modules.lists.ListItem
 import com.shroomlife.shliste.navigateTo
-import com.shroomlife.shliste.ui.theme.PrimaryColor
-import com.shroomlife.shliste.ui.theme.SecondaryColor
 import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
@@ -39,6 +39,7 @@ fun ListItem(
     item: ListItem,
     onClick: (() -> Unit)? = null
 ) {
+    val isDark = isSystemInDarkTheme()
     val listStore = LocalListStore.current
     val navController = LocalNavController.current
 
@@ -46,8 +47,7 @@ fun ListItem(
         modifier = Modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
-            .background(Color.White, shape = RoundedCornerShape(8.dp))
-            .border(1.dp, Color.LightGray, shape = RoundedCornerShape(8.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp))
     ) {
         Row(
             modifier = Modifier
@@ -63,7 +63,7 @@ fun ListItem(
                             color = if(item.checked) {
                                 Color.LightGray
                             } else {
-                                SecondaryColor
+                                MaterialTheme.colorScheme.secondary
                             },
                             shape = RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp)
                         )
@@ -74,9 +74,9 @@ fun ListItem(
                         text = "${item.quantity}x",
                         fontSize = 20.sp,
                         color = if(item.checked) {
-                            Color.Gray
+                            MaterialTheme.colorScheme.outline
                         } else {
-                            PrimaryColor
+                            MaterialTheme.colorScheme.onSecondary
                         },
                         fontWeight = FontWeight.Bold,
                         fontFamily = ZainFontFamily
@@ -87,16 +87,15 @@ fun ListItem(
             Box(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable {
+                    .then(
                         if(onClick != null) {
-                            onClick()
-                            return@clickable
+                            Modifier.clickable {
+                                onClick()
+                            }
+                        } else {
+                            Modifier
                         }
-                        navigateTo(
-                            navController,
-                            Routes.listItemEdit(item.uuid)
-                        )
-                    }
+                    )
                     .padding(
                         horizontal = 14.dp,
                         vertical = 8.dp
@@ -106,11 +105,13 @@ fun ListItem(
             ) {
                 Text(
                     text = item.name,
-                    fontSize = 20.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = if(item.checked) {
-                        Color.LightGray
+                        MaterialTheme.colorScheme.onSurface.copy(
+                            alpha = 0.5f
+                        )
                     } else {
-                        Color.Black
+                        MaterialTheme.colorScheme.onSurface
                     }
                 )
             }

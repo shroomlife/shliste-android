@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,7 +36,6 @@ fun BackButton(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White)
                 .clickable {
                     if (to != null) {
                         val popped = navController.popBackStack(to, inclusive = false)
@@ -55,10 +55,12 @@ fun BackButton(
                 contentDescription = iconAlt,
                 modifier = Modifier.size(20.dp)
             )
-            Text(text = caption)
+            Text(
+                text = caption
+            )
         }
         HorizontalDivider(
-            color = DefaultLightGray
+            color = MaterialTheme.colorScheme.outline
         )
     }
 }

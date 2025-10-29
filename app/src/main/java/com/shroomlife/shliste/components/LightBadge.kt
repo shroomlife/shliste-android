@@ -20,10 +20,6 @@ fun LightBadge(
 ) {
     Box(
         modifier = Modifier
-            .background(
-                color = Color.White,
-                shape = RoundedCornerShape(8.dp)
-            )
             .border(1.dp, Color.LightGray, RoundedCornerShape(8.dp))
             .padding(
                 start = 10.dp,

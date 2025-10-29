@@ -1,6 +1,5 @@
 package com.shroomlife.shliste.modules.recipes
 
-import com.shroomlife.shliste.modules.lists.ListItem
 import kotlinx.serialization.*
 
 @Serializable

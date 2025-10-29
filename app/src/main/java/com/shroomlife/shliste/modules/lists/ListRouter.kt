@@ -11,7 +11,7 @@ import com.shroomlife.shliste.modules.lists.screens.ListsDetailScreen
 import com.shroomlife.shliste.modules.lists.screens.ListsOverviewScreen
 import com.shroomlife.shliste.navigateTo
 
-fun NavGraphBuilder.listNavGraph(navController: NavController) {
+fun NavGraphBuilder.ListRouter(navController: NavController) {
     composable(Routes.LISTS) { ListsOverviewScreen() }
     composable(
         route = Routes.LIST_DETAIL,

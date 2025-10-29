@@ -119,7 +119,7 @@ fun RecipesOverviewScreen() {
                                 Icon(
                                     painter = painterResource(R.drawable.icon_products),
                                     contentDescription = null,
-                                    tint = Color(0xFF111827),
+                                    tint = MaterialTheme.colorScheme.onSurface,
                                     modifier = Modifier
                                         .size(14.dp)
                                 )
@@ -131,7 +131,8 @@ fun RecipesOverviewScreen() {
                                 } else {
                                     "${recipe.ingredients.size} Zutaten"
                                 },
-                                style = MaterialTheme.typography.bodySmall
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
                         }
                     }

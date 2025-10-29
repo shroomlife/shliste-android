@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -20,15 +21,13 @@ import com.shroomlife.shliste.navigateTo
 fun AppBottomBar() {
 
     val iconSize = 32.dp
-
     val navController = LocalNavController.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     Box(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(0xFFFDECF5)),
+            .fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
         Row(
@@ -42,7 +41,7 @@ fun AppBottomBar() {
                     modifier = Modifier
                         .weight(1f)
                         .clickable {
-                            navigateTo(navController, destination.route)
+                            navigateTo(navController, destination.route, destination.route)
                         }
                         .padding(vertical = 12.dp),
                     contentAlignment = Alignment.Center
@@ -52,9 +51,9 @@ fun AppBottomBar() {
                         contentDescription = destination.label,
                         modifier = Modifier.size(iconSize),
                         tint = if(isSelected) {
-                            Color(0xFFE064B2)
+                            MaterialTheme.colorScheme.primary
                         } else {
-                            Color(0xFF6B7280)
+                            MaterialTheme.colorScheme.outline
                         }
                     )
                 }

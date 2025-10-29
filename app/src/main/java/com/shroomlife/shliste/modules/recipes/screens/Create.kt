@@ -1,6 +1,5 @@
 package com.shroomlife.shliste.modules.recipes.screens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -14,22 +13,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.AppContainer
-import com.shroomlife.shliste.LocalAppStore
 import com.shroomlife.shliste.LocalRecipeStore
-import com.shroomlife.shliste.R
 import com.shroomlife.shliste.components.BackButton
 import com.shroomlife.shliste.navigateTo
-import com.shroomlife.shliste.ui.theme.PrimaryColor
 import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
@@ -125,10 +119,6 @@ fun RecipesCreateScreen() {
                     modifier = Modifier
                         .fillMaxWidth(),
                     shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = PrimaryColor,
-                        contentColor = Color.White
-                    )
                 ) {
                     Text(
                         text = "Speichern",

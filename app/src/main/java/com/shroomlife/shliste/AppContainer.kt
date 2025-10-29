@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.shroomlife.shliste.components.AppBottomBar
 import com.shroomlife.shliste.components.AppHeader
 import com.shroomlife.shliste.components.DefaultLoader
+import com.shroomlife.shliste.ui.theme.SecondaryColor
 
 @Composable
 fun AppContainer(
@@ -58,6 +60,9 @@ fun AppContainer(
                         WindowInsets.navigationBars.only(WindowInsetsSides.Bottom)
                     )
             ) {
+                HorizontalDivider(
+                    color = SecondaryColor
+                )
                 if(bottomBar != null) {
                     bottomBar()
                 } else {
@@ -86,7 +91,6 @@ fun AppContainer(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.White)
                         .then(
                             if (disableScroll) {
                                 Modifier

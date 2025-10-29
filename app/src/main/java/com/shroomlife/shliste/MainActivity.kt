@@ -7,12 +7,11 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.compose.NavHost
+import com.shroomlife.shliste.modules.lists.ListRouter
 import com.shroomlife.shliste.modules.lists.ListStore
-import com.shroomlife.shliste.modules.lists.listNavGraph
-import com.shroomlife.shliste.modules.recipes.recipeNavGraph
+import com.shroomlife.shliste.modules.recipes.RecipeRouter
 import com.shroomlife.shliste.ui.theme.ShlisteTheme
 
 class MainActivity : FragmentActivity() {
@@ -47,8 +46,10 @@ fun ShlisteApp() {
         startDestination = Routes.LISTS,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None }
     ) {
-        listNavGraph(navController)
-        recipeNavGraph(navController)
+        ListRouter(navController)
+        RecipeRouter(navController)
     }
 }

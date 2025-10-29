@@ -3,6 +3,7 @@ package com.shroomlife.shliste.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +30,15 @@ fun DefaultCard(
     onClickHeader: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
+
+    val isDark = isSystemInDarkTheme()
+    val resolvedBackground = if (isDark) {
+        Color.Transparent
+    } else {
+        Color.White
+    }
+
+
     Card(
         modifier = if(onClick != null) {
             Modifier
@@ -41,8 +51,12 @@ fun DefaultCard(
                 .fillMaxWidth()
         },
         shape = RoundedCornerShape(16.dp),
+        colors = if (!isDark) {
+            CardDefaults.cardColors(containerColor = Color.White)
+        } else {
+            CardDefaults.cardColors()
+        },
         border = BorderStroke(1.dp, DefaultLightGray),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column() {
@@ -63,7 +77,7 @@ fun DefaultCard(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
                                     backgroundColor,
-                                    Color.White
+                                    Color.Transparent
                                 )
                             )
                         )

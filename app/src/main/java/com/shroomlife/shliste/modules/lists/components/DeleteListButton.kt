@@ -39,7 +39,7 @@ fun DeleteListButton(
                 Icon(
                     painterResource(R.drawable.icon_trash),
                     contentDescription = "Löschen",
-                    tint = Color.Red,
+                    tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier
                         .size(32.dp)
                 )
@@ -67,9 +67,11 @@ fun DeleteListButton(
 
     OutlinedButton(
         modifier = Modifier.fillMaxWidth(),
-        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Red),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = MaterialTheme.colorScheme.secondary
+        ),
         shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, Color.Red),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary),
         onClick = { showDialog = true },
     ) {
         Row(
@@ -79,11 +81,11 @@ fun DeleteListButton(
             Icon(
                 painterResource(R.drawable.icon_trash),
                 contentDescription = "Löschen",
-                tint = Color.Red,
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .size(14.dp)
             )
-            Text(text = "Liste löschen", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Liste löschen", style = MaterialTheme.typography.bodySmall)
         }
     }
 }

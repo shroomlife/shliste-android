@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,7 +37,6 @@ import com.shroomlife.shliste.LocalListStore
 import com.shroomlife.shliste.LocalNavController
 import com.shroomlife.shliste.Routes
 import com.shroomlife.shliste.navigateTo
-import com.shroomlife.shliste.ui.theme.PrimaryColor
 import com.shroomlife.shliste.ui.theme.ZainFontFamily
 
 @Composable
@@ -179,10 +177,6 @@ fun ListItemEditSheet(
                 modifier = Modifier
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryColor,
-                    contentColor = Color.White
-                )
             ) {
                 Text(
                     text = "Speichern",
